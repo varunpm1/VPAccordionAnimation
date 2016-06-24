@@ -103,7 +103,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="6mL-D8-2Ay">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="tU5-Sp-Sa7">
                                     <size key="itemSize" width="100" height="50"/>
@@ -128,13 +128,23 @@
                                     <outlet property="delegate" destination="0S7-XJ-SQL" id="n2N-XW-11M"/>
                                 </connections>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tjh-YN-3Hr">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="9bC-gu-all"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="6mL-D8-2Ay" firstAttribute="leading" secondItem="F8M-nl-MQn" secondAttribute="leading" id="3ZA-Dk-btM"/>
+                            <constraint firstAttribute="trailing" secondItem="tjh-YN-3Hr" secondAttribute="trailing" id="96n-CZ-kJG"/>
+                            <constraint firstItem="tjh-YN-3Hr" firstAttribute="top" secondItem="6mL-D8-2Ay" secondAttribute="bottom" id="CvS-WI-Aa7"/>
                             <constraint firstItem="6mL-D8-2Ay" firstAttribute="top" secondItem="F8M-nl-MQn" secondAttribute="top" id="J6E-gK-5xv"/>
-                            <constraint firstItem="RNd-yL-cyK" firstAttribute="top" secondItem="6mL-D8-2Ay" secondAttribute="bottom" id="Jhs-9o-cbN"/>
                             <constraint firstAttribute="trailing" secondItem="6mL-D8-2Ay" secondAttribute="trailing" id="RQf-zR-Thq"/>
+                            <constraint firstItem="tjh-YN-3Hr" firstAttribute="leading" secondItem="F8M-nl-MQn" secondAttribute="leading" id="WrO-zD-zZp"/>
+                            <constraint firstItem="RNd-yL-cyK" firstAttribute="top" secondItem="tjh-YN-3Hr" secondAttribute="bottom" id="aRU-WJ-E6Q"/>
                         </constraints>
                     </view>
                 </viewController>

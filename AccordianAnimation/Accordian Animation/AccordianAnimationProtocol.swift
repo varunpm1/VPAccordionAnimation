@@ -63,27 +63,39 @@ extension AccordianAnimationProtocol where Self : UIViewController {
                 let rect = tableView.rectForRowAtIndexPath(indexPath)
                 
                 // Create the necessary frame for top and bottom image size
-                let topImageRect = CGRect(x: tableView.frame.origin.x, y: tableView.frame.origin.y, width: tableView.bounds.size.width, height: CGRectGetMaxY(rect))
-                let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.contentSize.height - CGRectGetMaxY(rect))
+                let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
+                let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height)
                 
                 // Create the top and bottom screenshot for showing the animation
                 let topImage = self.getScreenShot(tableView, forRect: topImageRect)
                 let bottomImage = self.getScreenShot(tableView, forRect: bottomImageRect)
                 
+                // Reload the tableView and scroll the row to middle of the tableView, if needed
+                tableView.reloadData()
+                tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
+                
                 // Create the top and bottom image views for showing the animation
                 topImageView = UIImageView(image: topImage)
-                topImageView?.frame = topImageRect
+                let topOffSet = topImageRect.origin.y - tableView.contentOffset.y
+                if (tableView.contentOffset.y + tableView.bounds.size.height) <= (tableView.contentSize.height - tableView.bounds.size.height / 2) {
+                    topImageView?.frame = CGRect(x: topImageRect.origin.x, y: topOffSet, width: topImageRect.size.width, height: topImageRect.size.height)
+                }
+                else {
+                    topImageView?.frame = CGRect(x: topImageRect.origin.x, y: topOffSet + expandedCellHeight - unexpandedCellHeight, width: topImageRect.size.width, height: topImageRect.size.height)
+                }
                 
                 bottomImageView = UIImageView(image: bottomImage)
-                bottomImageView?.frame = bottomImageRect
+                let bottomOffSet = bottomImageRect.origin.y - tableView.contentOffset.y
+                if (tableView.contentOffset.y + tableView.bounds.size.height) <= (tableView.contentSize.height - tableView.bounds.size.height / 2) {
+                    bottomImageView?.frame = CGRect(x: bottomImageRect.origin.x, y: bottomOffSet, width: bottomImageRect.size.width, height: bottomImageRect.size.height)
+                }
+                else {
+                    bottomImageView?.frame = CGRect(x: bottomImageRect.origin.x, y: bottomOffSet + expandedCellHeight - unexpandedCellHeight, width: bottomImageRect.size.width, height: bottomImageRect.size.height)
+                }
                 
                 // Add the image views on top of self
                 self.view.addSubview(topImageView!)
                 self.view.addSubview(bottomImageView!)
-                
-                // Reload the tableView and scroll the row to middle of the tableView, if needed
-                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
                 
                 // Get the new instance of the cell at the selectedIndexPath
                 if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccrodianTableViewCell {
@@ -95,14 +107,40 @@ extension AccordianAnimationProtocol where Self : UIViewController {
                     
                     // Animate the movement of image view to have an effect of table expanding
                     UIView.animateWithDuration(1, animations: {
-                        // Set the top of image view to negative value to move it out of the screen
-                        topImageView?.frame.origin.y = -(tableView.contentOffset.y)
-                        
-                        // Set the bottom of image view to positive value to move it out of the screen. Calculate the increase in cell height and move it w.r.t to rect of selectedIndexPath
-                        bottomImageView?.frame.origin.y = (tableView.contentOffset.y + cell.bounds.size.height)
+                        if tableView.contentOffset.y > 0 {
+                            if (tableView.contentOffset.y + tableView.bounds.size.height) >= (tableView.contentSize.height - tableView.bounds.size.height / 2) {
+                                
+                            }
+                            else {
+                                // Move the imageViews to negative so as to have a scroll animation to middle
+                                topImageView?.frame.origin.y = -(topImageView!.bounds.size.height - tableView.center.y)
+                                bottomImageView?.frame.origin.y = (tableView.center.y)
+                            }
+                        }
                         }, completion: { (isSuccess) in
-                            topImageView?.removeFromSuperview()
-                            bottomImageView?.removeFromSuperview()
+                            UIView.animateWithDuration(1, animations: {
+                                if tableView.contentOffset.y > 0 {
+                                    if (tableView.contentOffset.y + tableView.bounds.size.height) >= (tableView.contentSize.height - tableView.bounds.size.height / 2) {
+                                        // Set the top of image view to negative value to move it out of the screen
+                                        topImageView?.frame.origin.y -= (self.expandedCellHeight - self.unexpandedCellHeight)
+                                    }
+                                    else {
+                                        // Set the top of image view to negative value to move it out of the screen
+                                        topImageView?.frame.origin.y -= (self.expandedCellHeight / 2 - self.unexpandedCellHeight)
+                                        
+                                        // Set the bottom of image view to positive value to move it out of the screen. Calculate the increase in cell height and move it w.r.t to rect of selectedIndexPath
+                                        bottomImageView?.frame.origin.y += (self.expandedCellHeight / 2)
+                                    }
+                                }
+                                else {
+                                    // Set the bottom of image view to positive value to move it out of the screen. Calculate the increase in cell height and move it w.r.t to rect of selectedIndexPath
+                                    bottomImageView?.frame.origin.y += (self.expandedCellHeight - self.unexpandedCellHeight)
+                                }
+                                }, completion: { (isSuccess) in
+                                    // Remove the image Views
+//                                    topImageView?.removeFromSuperview()
+//                                    bottomImageView?.removeFromSuperview()
+                            })
                     })
                 }
             }
@@ -110,12 +148,18 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     /// Get the screenshot based on the rect size and origin. If origin is 0, then top screenshot is created. Else the bottom screenshot is created.
-    private func getScreenShot(aView : UIView, forRect rect : CGRect) -> UIImage {
+    private func getScreenShot(aView : UIScrollView, forRect rect : CGRect) -> UIImage {
+        let frame = aView.frame
+        
         UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.mainScreen().scale)
-        CGContextTranslateCTM(UIGraphicsGetCurrentContext(), 0, -rect.origin.y);
+        aView.frame = CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width, height: rect.size.height + rect.origin.y)
+        CGContextTranslateCTM(UIGraphicsGetCurrentContext(), rect.origin.x, -rect.origin.y);
         aView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+        
+        aView.frame = frame
         
         return image
     }
