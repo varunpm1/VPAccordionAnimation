@@ -7,14 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B5BF4DF1D1D3BA30097F440 /* AccordianAnimationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5BF4DD1D1D3BA30097F440 /* AccordianAnimationProtocol.swift */; };
+		8B5BF4E01D1D3BA30097F440 /* AccrodianTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5BF4DE1D1D3BA30097F440 /* AccrodianTableViewCell.swift */; };
+		8B5BF4E21D1D3C100097F440 /* SampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5BF4E11D1D3C100097F440 /* SampleViewController.swift */; };
 		8B5DF4371D1BCE2300B91D78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5DF4361D1BCE2300B91D78 /* AppDelegate.swift */; };
 		8B5DF4391D1BCE2300B91D78 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5DF4381D1BCE2300B91D78 /* ViewController.swift */; };
 		8B5DF43C1D1BCE2300B91D78 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B5DF43A1D1BCE2300B91D78 /* Main.storyboard */; };
 		8B5DF43E1D1BCE2300B91D78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B5DF43D1D1BCE2300B91D78 /* Assets.xcassets */; };
 		8B5DF4411D1BCE2300B91D78 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B5DF43F1D1BCE2300B91D78 /* LaunchScreen.storyboard */; };
+		8B5DF4511D1C0F1000B91D78 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5DF4501D1C0F1000B91D78 /* CustomTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8B5BF4DD1D1D3BA30097F440 /* AccordianAnimationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordianAnimationProtocol.swift; sourceTree = "<group>"; };
+		8B5BF4DE1D1D3BA30097F440 /* AccrodianTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccrodianTableViewCell.swift; sourceTree = "<group>"; };
+		8B5BF4E11D1D3C100097F440 /* SampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleViewController.swift; sourceTree = "<group>"; };
 		8B5DF4331D1BCE2300B91D78 /* AccordianAnimation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AccordianAnimation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B5DF4361D1BCE2300B91D78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8B5DF4381D1BCE2300B91D78 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +29,7 @@
 		8B5DF43D1D1BCE2300B91D78 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B5DF4401D1BCE2300B91D78 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8B5DF4421D1BCE2300B91D78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8B5DF4501D1C0F1000B91D78 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +43,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8B5BF4DC1D1D3BA30097F440 /* Accordian Animation */ = {
+			isa = PBXGroup;
+			children = (
+				8B5BF4DD1D1D3BA30097F440 /* AccordianAnimationProtocol.swift */,
+				8B5BF4DE1D1D3BA30097F440 /* AccrodianTableViewCell.swift */,
+			);
+			path = "Accordian Animation";
+			sourceTree = "<group>";
+		};
 		8B5DF42A1D1BCE2300B91D78 = {
 			isa = PBXGroup;
 			children = (
@@ -55,7 +72,10 @@
 			isa = PBXGroup;
 			children = (
 				8B5DF4361D1BCE2300B91D78 /* AppDelegate.swift */,
+				8B5BF4DC1D1D3BA30097F440 /* Accordian Animation */,
 				8B5DF4381D1BCE2300B91D78 /* ViewController.swift */,
+				8B5DF4501D1C0F1000B91D78 /* CustomTableViewCell.swift */,
+				8B5BF4E11D1D3C100097F440 /* SampleViewController.swift */,
 				8B5DF43A1D1BCE2300B91D78 /* Main.storyboard */,
 				8B5DF43D1D1BCE2300B91D78 /* Assets.xcassets */,
 				8B5DF43F1D1BCE2300B91D78 /* LaunchScreen.storyboard */,
@@ -136,6 +156,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B5DF4391D1BCE2300B91D78 /* ViewController.swift in Sources */,
+				8B5DF4511D1C0F1000B91D78 /* CustomTableViewCell.swift in Sources */,
+				8B5BF4E21D1D3C100097F440 /* SampleViewController.swift in Sources */,
+				8B5BF4E01D1D3BA30097F440 /* AccrodianTableViewCell.swift in Sources */,
+				8B5BF4DF1D1D3BA30097F440 /* AccordianAnimationProtocol.swift in Sources */,
 				8B5DF4371D1BCE2300B91D78 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +310,7 @@
 				8B5DF4471D1BCE2300B91D78 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
