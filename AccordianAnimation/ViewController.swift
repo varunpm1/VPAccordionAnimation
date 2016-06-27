@@ -13,9 +13,6 @@ class ViewController: UIViewController, AccordianAnimationProtocol {
     @IBOutlet weak var tableView: UITableView!
     
     var selectedIndexPath : NSIndexPath?
-    
-    var expandedCellHeight: CGFloat = 340
-    var unexpandedCellHeight: CGFloat = 60
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,10 +44,10 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if selectedIndexPath == indexPath {
-            return expandedCellHeight
+            return 340
         }
         else {
-            return unexpandedCellHeight
+            return 60
         }
     }
     

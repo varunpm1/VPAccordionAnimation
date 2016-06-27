@@ -14,12 +14,6 @@ typealias AccordianAnimationCompletionBlock = (() -> ())
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
     var selectedIndexPath : NSIndexPath? {get set}
     
-    /// Data source for expanded cell height
-    var expandedCellHeight : CGFloat {get set}
-    
-    /// Data source for collapsed cell height
-    var unexpandedCellHeight : CGFloat {get set}
-    
     /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
     optional var animationDuration : NSTimeInterval {get set}
 }

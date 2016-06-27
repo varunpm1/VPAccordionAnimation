@@ -24,18 +24,20 @@ class AccrodianTableViewCell: UITableViewCell {
         assert(infoView != nil, "InfoView cannot be nil")
         
         // Create details view
-        detailsView = UIView(frame: CGRectZero)
-        addSubview(detailsView)
-        
-        // Add necessary constraints
-        detailsView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let horizontalConstraint = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[view]-0-|", options: [], metrics: nil, views: ["view" : detailsView])
-        let bottomConstraint = NSLayoutConstraint(item: detailsView, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-        let topConstraint = NSLayoutConstraint(item: detailsView, attribute: .Top, relatedBy: .Equal, toItem: infoView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-        
-        addConstraints(horizontalConstraint)
-        addConstraints([bottomConstraint, topConstraint])
+        if detailsView == nil {
+            detailsView = UIView(frame: CGRectZero)
+            addSubview(detailsView)
+            
+            // Add necessary constraints
+            detailsView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let horizontalConstraint = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[view]-0-|", options: [], metrics: nil, views: ["view" : detailsView])
+            let bottomConstraint = NSLayoutConstraint(item: detailsView, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+            let topConstraint = NSLayoutConstraint(item: detailsView, attribute: .Top, relatedBy: .Equal, toItem: infoView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+            
+            addConstraints(horizontalConstraint)
+            addConstraints([bottomConstraint, topConstraint])
+        }
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
