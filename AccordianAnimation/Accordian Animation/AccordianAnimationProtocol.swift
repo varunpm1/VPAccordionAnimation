@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol AccordianAnimationProtocol : class {
+@objc protocol AccordianAnimationProtocol : class {
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
     var selectedIndexPath : NSIndexPath? {get set}
     
@@ -17,9 +17,13 @@ protocol AccordianAnimationProtocol : class {
     
     /// Data source for collapsed cell height
     var unexpandedCellHeight : CGFloat {get set}
+    
+    /// Defines the animation duration to be used for expanding or collapsing. Default to 0.4
+    optional var animationDuration : NSTimeInterval {get set}
 }
 
 extension AccordianAnimationProtocol where Self : UIViewController {
+    //MARK: Public functions
     /// Animate the showing of view controller with an expanding animation inside a tableView
     func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : (() -> ())?) {
         // If any cell is expanded, then collapse it first
@@ -63,6 +67,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         }
     }
     
+    //MARK: Private helper functions
     private func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : (() -> ())?) {
         // Since expanding, set the necessary variables
         self.selectedIndexPath = indexPath
@@ -152,9 +157,14 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         self.view.addSubview(topImageView)
         self.view.addSubview(bottomImageView)
         
+        var animationDuration = self.animationDuration
+        if animationDuration == nil {
+            animationDuration = 0.4
+        }
+        
         let callBack = {
             // Animate the expansion/collapsing of table cells
-            UIView.animateWithDuration(0.6, animations: {
+            UIView.animateWithDuration(animationDuration!, animations: {
                 // Scroll the tableView to middle if needed
                 tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
                 
