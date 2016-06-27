@@ -47,6 +47,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         if let selectedIndexPath = selectedIndexPath {
             // Remove all unnecessary data
             self.selectedIndexPath = nil
+            tableView.scrollEnabled = true
             
             // Take the necessary screenshot to make the UI ready for aniamtion
             let animationBlock = createScreenshotUI(tableView, indexPath: selectedIndexPath, callBack: callBack)
@@ -73,6 +74,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     private func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // Since expanding, set the necessary variables
         self.selectedIndexPath = indexPath
+        tableView.scrollEnabled = false
         
         // Add the view controller as a child view controller
         self.addChildViewController(viewController)

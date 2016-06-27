@@ -47,22 +47,14 @@
                                                         <constraint firstAttribute="trailing" secondItem="pOD-Kv-4kb" secondAttribute="trailing" id="s5s-5n-9r2"/>
                                                     </constraints>
                                                 </view>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s7H-Pc-hX1">
-                                                    <rect key="frame" x="0.0" y="59" width="600" height="0.0"/>
-                                                </view>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="z1n-pP-r0Z" secondAttribute="trailing" id="FXR-IE-qwq"/>
-                                                <constraint firstAttribute="bottom" secondItem="s7H-Pc-hX1" secondAttribute="bottom" id="XOn-Gt-BLV"/>
                                                 <constraint firstItem="z1n-pP-r0Z" firstAttribute="leading" secondItem="Q1f-eK-z3Q" secondAttribute="leading" id="bfv-uV-NHK"/>
                                                 <constraint firstItem="z1n-pP-r0Z" firstAttribute="top" secondItem="Q1f-eK-z3Q" secondAttribute="top" id="dtq-nx-tIy"/>
-                                                <constraint firstAttribute="trailing" secondItem="s7H-Pc-hX1" secondAttribute="trailing" id="lgK-Z1-y2A"/>
-                                                <constraint firstItem="s7H-Pc-hX1" firstAttribute="top" secondItem="z1n-pP-r0Z" secondAttribute="bottom" id="qJG-8y-kTs"/>
-                                                <constraint firstItem="s7H-Pc-hX1" firstAttribute="leading" secondItem="Q1f-eK-z3Q" secondAttribute="leading" id="raj-je-4hj"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="detailsView" destination="s7H-Pc-hX1" id="Mft-VX-cEa"/>
                                             <outlet property="displayLabel" destination="pOD-Kv-4kb" id="ZQg-5Q-g6M"/>
                                             <outlet property="infoView" destination="z1n-pP-r0Z" id="wzW-y7-jST"/>
                                         </connections>

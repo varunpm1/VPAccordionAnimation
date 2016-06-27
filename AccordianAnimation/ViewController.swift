@@ -14,7 +14,7 @@ class ViewController: UIViewController, AccordianAnimationProtocol {
     
     var selectedIndexPath : NSIndexPath?
     
-    var expandedCellHeight: CGFloat = 200
+    var expandedCellHeight: CGFloat = 340
     var unexpandedCellHeight: CGFloat = 60
 
     override func viewDidLoad() {
