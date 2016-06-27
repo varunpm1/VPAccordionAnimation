@@ -8,158 +8,108 @@
 
 import UIKit
 
-private var topImageView : UIImageView?
-private var bottomImageView : UIImageView?
-private var topContentOffset : CGPoint?
-
 protocol AccordianAnimationProtocol : class {
-    // Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
+    /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
     var selectedIndexPath : NSIndexPath? {get set}
+    
+    /// Data source for expanded cell height
     var expandedCellHeight : CGFloat {get set}
+    
+    /// Data source for collapsed cell height
     var unexpandedCellHeight : CGFloat {get set}
 }
 
 extension AccordianAnimationProtocol where Self : UIViewController {
-    /// Animate the showing of view controller with an expanding and collapsing animation inside a tableView
-    func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath) {
-        // If the previous selectedIndexPath and indexPath are same, then collpase the cell. Else expand the cell
-        if selectedIndexPath == indexPath {
-            // Remove all unnecessary data
-            self.selectedIndexPath = nil
-            tableView.scrollEnabled = true
-            
-            if let topImageView = topImageView, bottomImageView = bottomImageView {
-                self.view.addSubview(topImageView)
-                self.view.addSubview(bottomImageView)
-                
-                UIView.animateWithDuration(1, animations: {
-                    topImageView.frame.origin.y = 0
-                    bottomImageView.frame.origin.y = topImageView.frame.size.height
-                    }, completion: { (isSuccess) in
-                        tableView.reloadData()
-                        
-                        if let topContentOffset = topContentOffset {
-                            tableView.contentOffset = topContentOffset
-                        }
-                        
-                        topImageView.removeFromSuperview()
-                        bottomImageView.removeFromSuperview()
-                })
-            }
-            
-            topImageView = nil
-            bottomImageView = nil
+    /// Animate the showing of view controller with an expanding animation inside a tableView
+    func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : (() -> ())?) {
+        // If any cell is expanded, then collapse it first
+        if let selectedIndexPath = selectedIndexPath {
+            self.hideViewController(inTableView: tableView, forIndexPath: selectedIndexPath, callBack: {
+                // After hiding all other cells, expand the current cell
+                self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
+            })
         }
         else {
-            // If expanding, then disable scrolling and set the necessary variable
-            selectedIndexPath = indexPath
-            tableView.scrollEnabled = false
-            topContentOffset = tableView.contentOffset
+            // If no cell is expanded, then simply expand the cell
+            self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
+        }
+    }
+    
+    /// Animate the collapsing of view controller with collapsing animation inside a tableView
+    func hideViewController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : (() -> ())?) {
+        // If the previous selectedIndexPath and indexPath are same, then collpase the cell.
+        if let selectedIndexPath = selectedIndexPath {
+            // Remove all unnecessary data
+            self.selectedIndexPath = nil
             
-            // Add the view controller as a child view controller
-            self.addChildViewController(viewController)
+            // Take the necessary screenshot to make the UI ready for aniamtion
+            let animationBlock = createScreenshotUI(tableView, indexPath: selectedIndexPath, callBack: callBack)
             
-            if let _ = selectedIndexPath {
-                let rect = tableView.rectForRowAtIndexPath(indexPath)
-                
-                // Create the necessary frame for top and bottom image size
-                let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
-                let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height)
-                
-                // Create the top and bottom screenshot for showing the animation
-                let topImage = self.getScreenShot(tableView, forRect: topImageRect)
-                let bottomImage = self.getScreenShot(tableView, forRect: bottomImageRect)
-                
-                // Reload the tableView and scroll the row to middle of the tableView, if needed
-                tableView.reloadData()
-                tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
-                
-                // Create the top and bottom image views for showing the animation
-                topImageView = UIImageView(image: topImage)
-                let topOffSet = topImageRect.origin.y - tableView.contentOffset.y
-                if (tableView.contentOffset.y + tableView.bounds.size.height) <= (tableView.contentSize.height - tableView.bounds.size.height / 2) {
-                    topImageView?.frame = CGRect(x: topImageRect.origin.x, y: topOffSet, width: topImageRect.size.width, height: topImageRect.size.height)
-                }
-                else {
-                    topImageView?.frame = CGRect(x: topImageRect.origin.x, y: topOffSet + expandedCellHeight - unexpandedCellHeight, width: topImageRect.size.width, height: topImageRect.size.height)
+            if let cell = tableView.cellForRowAtIndexPath(selectedIndexPath) as? AccrodianTableViewCell {
+                // Remove the view that was added as a subView
+                for subview in cell.detailsView.subviews {
+                    subview.removeFromSuperview()
                 }
                 
-                bottomImageView = UIImageView(image: bottomImage)
-                let bottomOffSet = bottomImageRect.origin.y - tableView.contentOffset.y
-                if (tableView.contentOffset.y + tableView.bounds.size.height) <= (tableView.contentSize.height - tableView.bounds.size.height / 2) {
-                    bottomImageView?.frame = CGRect(x: bottomImageRect.origin.x, y: bottomOffSet, width: bottomImageRect.size.width, height: bottomImageRect.size.height)
-                }
-                else {
-                    bottomImageView?.frame = CGRect(x: bottomImageRect.origin.x, y: bottomOffSet + expandedCellHeight - unexpandedCellHeight, width: bottomImageRect.size.width, height: bottomImageRect.size.height)
-                }
+                // Remove the view controller that was added as a child view controller
+                self.childViewControllers.last!.removeFromParentViewController()
                 
-                // Add the image views on top of self
-                self.view.addSubview(topImageView!)
-                self.view.addSubview(bottomImageView!)
+                // Reload the tableView content
+                tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 
-                // Get the new instance of the cell at the selectedIndexPath
-                if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccrodianTableViewCell {
-                    // Add the view controller's view as a subview to details view
-                    cell.detailsView.addSubview(viewController.view)
-                    
-                    // Add necessary constraints
-                    addFourSidedConstraintForView(viewController.view, withSuperView: cell.detailsView)
-                    
-                    // Animate the movement of image view to have an effect of table expanding
-                    UIView.animateWithDuration(1, animations: {
-                        if tableView.contentOffset.y > 0 {
-                            if (tableView.contentOffset.y + tableView.bounds.size.height) >= (tableView.contentSize.height - tableView.bounds.size.height / 2) {
-                                
-                            }
-                            else {
-                                // Move the imageViews to negative so as to have a scroll animation to middle
-                                topImageView?.frame.origin.y = -(topImageView!.bounds.size.height - tableView.center.y)
-                                bottomImageView?.frame.origin.y = (tableView.center.y)
-                            }
-                        }
-                        }, completion: { (isSuccess) in
-                            UIView.animateWithDuration(1, animations: {
-                                if tableView.contentOffset.y > 0 {
-                                    if (tableView.contentOffset.y + tableView.bounds.size.height) >= (tableView.contentSize.height - tableView.bounds.size.height / 2) {
-                                        // Set the top of image view to negative value to move it out of the screen
-                                        topImageView?.frame.origin.y -= (self.expandedCellHeight - self.unexpandedCellHeight)
-                                    }
-                                    else {
-                                        // Set the top of image view to negative value to move it out of the screen
-                                        topImageView?.frame.origin.y -= (self.expandedCellHeight / 2 - self.unexpandedCellHeight)
-                                        
-                                        // Set the bottom of image view to positive value to move it out of the screen. Calculate the increase in cell height and move it w.r.t to rect of selectedIndexPath
-                                        bottomImageView?.frame.origin.y += (self.expandedCellHeight / 2)
-                                    }
-                                }
-                                else {
-                                    // Set the bottom of image view to positive value to move it out of the screen. Calculate the increase in cell height and move it w.r.t to rect of selectedIndexPath
-                                    bottomImageView?.frame.origin.y += (self.expandedCellHeight - self.unexpandedCellHeight)
-                                }
-                                }, completion: { (isSuccess) in
-                                    // Remove the image Views
-//                                    topImageView?.removeFromSuperview()
-//                                    bottomImageView?.removeFromSuperview()
-                            })
-                    })
-                }
+                // Animate the collapsing of tableView
+                animationBlock()
             }
         }
     }
     
-    /// Get the screenshot based on the rect size and origin. If origin is 0, then top screenshot is created. Else the bottom screenshot is created.
+    private func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : (() -> ())?) {
+        // Since expanding, set the necessary variables
+        self.selectedIndexPath = indexPath
+        
+        // Add the view controller as a child view controller
+        self.addChildViewController(viewController)
+        
+        // Take the necessary screenshot to make the UI ready for aniamtion
+        let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
+        
+        // Reload the tableView content
+        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        
+        // Get the new instance of the cell at the selectedIndexPath
+        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccrodianTableViewCell {
+            // Add the view controller's view as a subview to details view
+            cell.detailsView.addSubview(viewController.view)
+            
+            // Add necessary constraints
+            addFourSidedConstraintForView(viewController.view, withSuperView: cell.detailsView)
+            
+            // Animate the expanding of tableView
+            animationBlock()
+        }
+    }
+    
+    /// Get the screenshot based on the rect size and origin.
     private func getScreenShot(aView : UIScrollView, forRect rect : CGRect) -> UIImage {
+        // Preserve the previous frame and contentOffset of the scrollView (tableView)
         let frame = aView.frame
+        let offset = aView.contentOffset
         
         UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.mainScreen().scale)
-        aView.frame = CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width, height: rect.size.height + rect.origin.y)
+        
+        // Move the frame for the screenshot starting position
         CGContextTranslateCTM(UIGraphicsGetCurrentContext(), rect.origin.x, -rect.origin.y);
+        
+        // Set the new frame for the view. An extra height is added for scrolling purpose. i.e., if bottom image is scrolled upwards, then empty image is seen and vice-versa
+        aView.frame = CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width, height: rect.size.height + rect.origin.y)
         aView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
+        // Reset the previous frame and contentOffset
         aView.frame = frame
+        aView.contentOffset = offset
         
         return image
     }
@@ -173,5 +123,63 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         let bottomConstraint = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: superView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
         
         superView.addConstraints([leadingConstraint, trailingConstraint, topConstraint, bottomConstraint])
+    }
+    
+    /// Take the necessary screenshot to make the UI ready for aniamtion
+    private func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : (() -> ())?) -> (() -> ()) {
+        // Get the frame of the selectedIndexPath and the current contentOffset
+        let rect = tableView.rectForRowAtIndexPath(indexPath)
+        let offset = tableView.contentOffset.y
+        
+        // Create the necessary frame for top and bottom image size
+        let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
+        let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height)
+        
+        // Create the top and bottom screenshot for showing the animation
+        let topImage = self.getScreenShot(tableView, forRect: topImageRect)
+        let bottomImage = self.getScreenShot(tableView, forRect: bottomImageRect)
+        
+        // Create the top and bottom image views for showing the animation
+        let topImageView = UIImageView(image: topImage)
+        let topOffSet = topImageRect.origin.y - tableView.contentOffset.y
+        topImageView.frame = CGRect(x: topImageRect.origin.x, y: topOffSet, width: topImageRect.size.width, height: topImageRect.size.height)
+        
+        let bottomImageView = UIImageView(image: bottomImage)
+        let bottomOffSet = bottomImageRect.origin.y - tableView.contentOffset.y
+        bottomImageView.frame = CGRect(x: bottomImageRect.origin.x, y: bottomOffSet, width: bottomImageRect.size.width, height: bottomImageRect.size.height)
+        
+        // Add the image views on top of self
+        self.view.addSubview(topImageView)
+        self.view.addSubview(bottomImageView)
+        
+        let callBack = {
+            // Animate the expansion/collapsing of table cells
+            UIView.animateWithDuration(0.6, animations: {
+                // Scroll the tableView to middle if needed
+                tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
+                
+                // Get the new frame for the selected indexPath
+                let rect = tableView.rectForRowAtIndexPath(indexPath)
+                
+                // Calculate the frame change of tableView
+                let offsetChange = offset - tableView.contentOffset.y
+                
+                // Set the topImageView and bottomImageView frame
+                topImageView.frame.origin.y += offsetChange
+                bottomImageView.frame.origin.y = CGRectGetMaxY(rect) - tableView.contentOffset.y
+                
+                }, completion: { (isSuccess) in
+                    // On completion, remove the imageViews
+                    topImageView.removeFromSuperview()
+                    bottomImageView.removeFromSuperview()
+                    
+                    // On successful animation, call callBack to indicate the animation completion
+                    if let callBack = callBack {
+                        callBack()
+                    }
+            })
+        }
+        
+        return callBack
     }
 }

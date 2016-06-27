@@ -57,8 +57,13 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let viewController = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        self.showViewController(viewController, inTableView: tableView, forIndexPath: indexPath)
+        if selectedIndexPath == indexPath {
+            self.hideViewController(inTableView: tableView, forIndexPath: indexPath, callBack: nil)
+        }
+        else {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let viewController = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+            self.showViewController(viewController, inTableView: tableView, forIndexPath: indexPath, callBack: nil)
+        }
     }
 }
