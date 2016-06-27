@@ -8,6 +8,8 @@
 
 import UIKit
 
+typealias AccordianAnimationCompletionBlock = (() -> ())
+
 @objc protocol AccordianAnimationProtocol : class {
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
     var selectedIndexPath : NSIndexPath? {get set}
@@ -18,14 +20,14 @@ import UIKit
     /// Data source for collapsed cell height
     var unexpandedCellHeight : CGFloat {get set}
     
-    /// Defines the animation duration to be used for expanding or collapsing. Default to 0.4
+    /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
     optional var animationDuration : NSTimeInterval {get set}
 }
 
 extension AccordianAnimationProtocol where Self : UIViewController {
     //MARK: Public functions
     /// Animate the showing of view controller with an expanding animation inside a tableView
-    func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : (() -> ())?) {
+    func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If any cell is expanded, then collapse it first
         if let selectedIndexPath = selectedIndexPath {
             self.hideViewController(inTableView: tableView, forIndexPath: selectedIndexPath, callBack: {
@@ -40,7 +42,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     /// Animate the collapsing of view controller with collapsing animation inside a tableView
-    func hideViewController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : (() -> ())?) {
+    func hideViewController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If the previous selectedIndexPath and indexPath are same, then collpase the cell.
         if let selectedIndexPath = selectedIndexPath {
             // Remove all unnecessary data
@@ -68,7 +70,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     //MARK: Private helper functions
-    private func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : (() -> ())?) {
+    private func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // Since expanding, set the necessary variables
         self.selectedIndexPath = indexPath
         
@@ -131,7 +133,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     /// Take the necessary screenshot to make the UI ready for aniamtion
-    private func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : (() -> ())?) -> (() -> ()) {
+    private func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) -> AccordianAnimationCompletionBlock {
         // Get the frame of the selectedIndexPath and the current contentOffset
         let rect = tableView.rectForRowAtIndexPath(indexPath)
         let offset = tableView.contentOffset.y
