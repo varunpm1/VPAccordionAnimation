@@ -37,13 +37,22 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow" translatesAutoresizingMaskIntoConstraints="NO" id="hHK-a4-fD8">
+                                                            <rect key="frame" x="560" y="14" width="32" height="32"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="32" id="6Oz-2S-Arn"/>
+                                                                <constraint firstAttribute="width" constant="32" id="o1e-YB-6Lr"/>
+                                                            </constraints>
+                                                        </imageView>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
+                                                        <constraint firstItem="hHK-a4-fD8" firstAttribute="centerY" secondItem="pOD-Kv-4kb" secondAttribute="centerY" id="ROl-g9-aPS"/>
                                                         <constraint firstItem="pOD-Kv-4kb" firstAttribute="leading" secondItem="z1n-pP-r0Z" secondAttribute="leading" id="T0R-Mz-rgl"/>
                                                         <constraint firstItem="pOD-Kv-4kb" firstAttribute="top" secondItem="z1n-pP-r0Z" secondAttribute="top" id="bCA-2Z-UAA"/>
                                                         <constraint firstAttribute="height" constant="59" id="e8P-mt-tsC"/>
                                                         <constraint firstAttribute="bottom" secondItem="pOD-Kv-4kb" secondAttribute="bottom" id="eIr-bF-Qq9"/>
+                                                        <constraint firstAttribute="trailing" secondItem="hHK-a4-fD8" secondAttribute="trailing" constant="8" id="hs3-xE-I2v"/>
                                                         <constraint firstAttribute="trailing" secondItem="pOD-Kv-4kb" secondAttribute="trailing" id="s5s-5n-9r2"/>
                                                     </constraints>
                                                 </view>
@@ -145,4 +154,7 @@
             <point key="canvasLocation" x="832" y="283"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="arrow" width="32" height="32"/>
+    </resources>
 </document>
