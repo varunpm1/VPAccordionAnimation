@@ -64,6 +64,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="arrowView" destination="hHK-a4-fD8" id="sOG-cR-cbU"/>
                                             <outlet property="displayLabel" destination="pOD-Kv-4kb" id="ZQg-5Q-g6M"/>
                                             <outlet property="infoView" destination="z1n-pP-r0Z" id="wzW-y7-jST"/>
                                         </connections>

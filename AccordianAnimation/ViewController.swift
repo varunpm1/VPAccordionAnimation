@@ -13,6 +13,9 @@ class ViewController: UIViewController, AccordianAnimationProtocol {
     @IBOutlet weak var tableView: UITableView!
     
     var selectedIndexPath : NSIndexPath?
+    var arrowImageFinalDirection: ArrowDirection = .Down
+    var arrowImageCurrentDirection: ArrowDirection = .Right
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()

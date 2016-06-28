@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CustomTableViewCell: AccrodianTableViewCell {
+class CustomTableViewCell: AccordianTableViewCell {
 
     @IBOutlet weak var displayLabel: UILabel!
     

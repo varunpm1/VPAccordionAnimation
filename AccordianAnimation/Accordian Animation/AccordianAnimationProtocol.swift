@@ -10,12 +10,23 @@ import UIKit
 
 typealias AccordianAnimationCompletionBlock = (() -> ())
 
+@objc enum ArrowDirection : Int {
+    case Left
+    case Up
+    case Right
+    case Down
+}
+
 @objc protocol AccordianAnimationProtocol : class {
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
     var selectedIndexPath : NSIndexPath? {get set}
     
     /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
     optional var animationDuration : NSTimeInterval {get set}
+    
+    /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
+    optional var arrowImageCurrentDirection : ArrowDirection {get set}
+    optional var arrowImageFinalDirection : ArrowDirection {get set}
 }
 
 extension AccordianAnimationProtocol where Self : UIViewController {
@@ -46,7 +57,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
             // Take the necessary screenshot to make the UI ready for aniamtion
             let animationBlock = createScreenshotUI(tableView, indexPath: selectedIndexPath, callBack: callBack)
             
-            if let cell = tableView.cellForRowAtIndexPath(selectedIndexPath) as? AccrodianTableViewCell {
+            if let cell = tableView.cellForRowAtIndexPath(selectedIndexPath) as? AccordianTableViewCell {
                 // Remove the view that was added as a subView
                 for subview in cell.detailsView.subviews {
                     subview.removeFromSuperview()
@@ -80,7 +91,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
         
         // Get the new instance of the cell at the selectedIndexPath
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccrodianTableViewCell {
+        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
             // Add the view controller's view as a subview to details view
             cell.detailsView.addSubview(viewController.view)
             
@@ -138,18 +149,22 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
         let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height)
         
+        // Get the instance of arrowView if animation needed for rotating the arrow
+        var arrowView : UIView?
+        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
+            if cell.arrowView != nil {
+                arrowView = NSKeyedUnarchiver.unarchiveObjectWithData(NSKeyedArchiver.archivedDataWithRootObject(cell.arrowView)) as? UIView
+                arrowView?.translatesAutoresizingMaskIntoConstraints = true
+                arrowView?.frame = CGRect(x: cell.arrowView.frame.origin.x, y: CGRectGetHeight(topImageRect) - CGRectGetMaxY(cell.arrowView.frame), width: cell.arrowView.frame.size.width, height: cell.arrowView.frame.size.height)
+                
+                // Hide the arrow View before taking a screenshot. Unhide after animation
+                cell.arrowView.hidden = true
+            }
+        }
+        
         // Create the top and bottom screenshot for showing the animation
-        let topImage = self.getScreenShot(tableView, forRect: topImageRect)
-        let bottomImage = self.getScreenShot(tableView, forRect: bottomImageRect)
-        
-        // Create the top and bottom image views for showing the animation
-        let topImageView = UIImageView(image: topImage)
-        let topOffSet = topImageRect.origin.y - tableView.contentOffset.y
-        topImageView.frame = CGRect(x: topImageRect.origin.x, y: topOffSet, width: topImageRect.size.width, height: topImageRect.size.height)
-        
-        let bottomImageView = UIImageView(image: bottomImage)
-        let bottomOffSet = bottomImageRect.origin.y - tableView.contentOffset.y
-        bottomImageView.frame = CGRect(x: bottomImageRect.origin.x, y: bottomOffSet, width: bottomImageRect.size.width, height: bottomImageRect.size.height)
+        let topImageView = self.addScreenshotView(tableView, forFrame: topImageRect)
+        let bottomImageView = self.addScreenshotView(tableView, forFrame: bottomImageRect)
         
         // Add the image views on top of self
         self.view.addSubview(topImageView)
@@ -160,9 +175,23 @@ extension AccordianAnimationProtocol where Self : UIViewController {
             animationDuration = 0.4
         }
         
-        let callBack = {
+        // Check if arrow view is added. If yes, then add it to the added screenshot
+        if let arrowView = arrowView {
+            topImageView.addSubview(arrowView)
+        }
+        
+        let callBack = { [weak self] in
+            if self == nil {
+                return
+            }
+            
             // Animate the expansion/collapsing of table cells
             UIView.animateWithDuration(animationDuration!, animations: {
+                // Animate the rotation of the arrow view if outlet is set
+                if let arrowView = arrowView {
+                    arrowView.transform = CGAffineTransformRotate(arrowView.transform, self!.getRotationAngleForArrow())
+                }
+                
                 // Scroll the tableView to middle if needed
                 tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
                 
@@ -177,6 +206,14 @@ extension AccordianAnimationProtocol where Self : UIViewController {
                 bottomImageView.frame.origin.y = CGRectGetMaxY(rect) - tableView.contentOffset.y
                 
                 }, completion: { (isSuccess) in
+                    if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
+                        cell.arrowView?.hidden = false
+                        
+                        if let arrowView = arrowView {
+                            cell.arrowView.transform = arrowView.transform
+                        }
+                    }
+                    
                     // On completion, remove the imageViews
                     topImageView.removeFromSuperview()
                     bottomImageView.removeFromSuperview()
@@ -189,5 +226,29 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         }
         
         return callBack
+    }
+    
+    // Helper function to retreive the screenshot inside a imageView
+    private func addScreenshotView(tableView : UITableView, forFrame screenshotRect : CGRect) -> UIImageView {
+        let screenshotImage = self.getScreenShot(tableView, forRect: screenshotRect)
+        
+        // Create the top and bottom image views for showing the animation
+        let imageView = UIImageView(image: screenshotImage)
+        let topOffSet = screenshotRect.origin.y - tableView.contentOffset.y
+        imageView.frame = CGRect(x: screenshotRect.origin.x, y: topOffSet, width: screenshotRect.size.width, height: screenshotRect.size.height)
+        
+        return imageView
+    }
+    
+    // Helper function for calcaulation the angle needed to rotate the arrow view
+    private func getRotationAngleForArrow() -> CGFloat {
+        if let currentValue = arrowImageCurrentDirection?.rawValue, finalValue = arrowImageFinalDirection?.rawValue {
+            let rotationConstant = finalValue - currentValue
+            
+            return CGFloat(Double(rotationConstant) * M_PI_2)
+        }
+        
+        // Else default rotation by 90 degrees clockwise/anti-clockwise
+        return CGFloat(M_PI_2)
     }
 }

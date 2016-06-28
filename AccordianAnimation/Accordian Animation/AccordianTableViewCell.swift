@@ -1,5 +1,5 @@
 //
-//  AccrodianTableViewCell.swift
+//  AccordianTableViewCell.swift
 //  AccordianAnimation
 //
 //  Created by Varun on 23/06/16.
@@ -8,11 +8,14 @@
 
 import UIKit
 
-class AccrodianTableViewCell: UITableViewCell {
+class AccordianTableViewCell: UITableViewCell {
     /** **Important: The Height constraint has to be set for infoView instead of bottom constraint** 
     
     Info view should be the container view holding all the views as subviews that represent the cell in unexpanded state */
     @IBOutlet weak var infoView: UIView!
+    
+    /// This variable holds the arrow view if present which needs rotation animation
+    @IBOutlet weak var arrowView: UIView!
     
     /// Details view is the container view holding all the views as subviews that represent the cell in expanded state (View controller data)
     var detailsView: UIView!
@@ -67,6 +70,8 @@ class AccrodianTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        
+        self.arrowView?.hidden = false
         
         // Remove subviews from details view when reusing cells
         for subview in detailsView.subviews {
