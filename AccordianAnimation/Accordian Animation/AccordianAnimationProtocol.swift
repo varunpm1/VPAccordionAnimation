@@ -103,8 +103,8 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         // Move the frame for the screenshot starting position
         CGContextTranslateCTM(UIGraphicsGetCurrentContext(), rect.origin.x, -rect.origin.y);
         
-        // Set the new frame for the view. An extra height is added for scrolling purpose. i.e., if bottom image is scrolled upwards, then empty image is seen and vice-versa
-        aView.frame = CGRect(x: rect.origin.x, y: rect.origin.y, width: rect.size.width, height: rect.size.height + rect.origin.y)
+        // Set the new contentOffset for the view.
+        aView.contentOffset.y = rect.origin.y
         aView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -134,7 +134,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
         let rect = tableView.rectForRowAtIndexPath(indexPath)
         let offset = tableView.contentOffset.y
         
-        // Create the necessary frame for top and bottom image size
+        // A full table height is added for safety purpose. An extra height is added for scrolling purpose. i.e., if bottom image is scrolled upwards, then empty image will be seen and vice-versa. To avoid this, rendering remaining bottom/top view so that image will not be empty
         let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
         let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height)
         

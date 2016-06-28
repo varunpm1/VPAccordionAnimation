@@ -39,6 +39,15 @@ class AccrodianTableViewCell: UITableViewCell {
             addConstraints([bottomConstraint, topConstraint])
         }
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        // Remove subviews from details view when reusing cells
+        for subview in detailsView.subviews {
+            subview.removeFromSuperview()
+        }
+    }
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
