@@ -23,6 +23,31 @@ class AccrodianTableViewCell: UITableViewCell {
         // Check if infoView is set or not. If not do not proceed further
         assert(infoView != nil, "InfoView cannot be nil")
         
+        // Check if height constraint is set or not
+        let constraintCheck = { [weak self] (constraint : NSLayoutConstraint) -> Bool in
+            if self == nil {
+                return false
+            }
+            
+            if constraint.firstAttribute == .Height && constraint.firstItem as? NSObject == self?.infoView {
+                return true
+            }
+            else {
+                return false
+            }
+        }
+        
+        var isHeightConstraintAdded = false
+        for constraint in infoView.constraints {
+            isHeightConstraintAdded = constraintCheck(constraint)
+            
+            if isHeightConstraintAdded {
+                break
+            }
+        }
+        
+        assert(isHeightConstraintAdded, "InfoView has to have a height constraint")
+        
         // Create details view
         if detailsView == nil {
             detailsView = UIView(frame: CGRectZero)
