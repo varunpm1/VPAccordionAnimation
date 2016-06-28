@@ -20,6 +20,10 @@ class AccordianTableViewCell: UITableViewCell {
     /// Details view is the container view holding all the views as subviews that represent the cell in expanded state (View controller data)
     var detailsView: UIView!
     
+    /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
+    var arrowImageCurrentDirection : ArrowDirection = .Right
+    var arrowImageFinalDirection : ArrowDirection = .Down
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

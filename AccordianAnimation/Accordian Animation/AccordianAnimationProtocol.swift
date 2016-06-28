@@ -19,26 +19,19 @@ typealias AccordianAnimationCompletionBlock = (() -> ())
 
 @objc protocol AccordianAnimationProtocol : class {
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
-    var selectedIndexPath : NSIndexPath? {get set}
-    
-    /// This is used by AccordianAnimationController for handling reverting the animation of the arrow. Not needed by subclasses.
-    var animationCompletionBlock : AccordianAnimationCompletionBlock? {get set}
+    var expandedIndexPath : NSIndexPath? {get set}
     
     /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
     optional var animationDuration : NSTimeInterval {get set}
-    
-    /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
-    optional var arrowImageCurrentDirection : ArrowDirection {get set}
-    optional var arrowImageFinalDirection : ArrowDirection {get set}
 }
 
-extension AccordianAnimationProtocol where Self : UIViewController {
+extension AccordianAnimationProtocol where Self : AccordianAnimationViewController {
     //MARK: Public functions
     /// Animate the showing of view controller with an expanding animation inside a tableView
     func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If any cell is expanded, then collapse it first
-        if let selectedIndexPath = selectedIndexPath {
-            self.hideViewController(inTableView: tableView, forIndexPath: selectedIndexPath, callBack: {
+        if let expandedIndexPath = expandedIndexPath {
+            self.hideViewController(inTableView: tableView, forIndexPath: expandedIndexPath, callBack: {
                 // After hiding all other cells, expand the current cell
                 self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
             })
@@ -51,16 +44,16 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     
     /// Animate the collapsing of view controller with collapsing animation inside a tableView
     func hideViewController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
-        // If the previous selectedIndexPath and indexPath are same, then collpase the cell.
-        if let selectedIndexPath = selectedIndexPath {
+        // If the previous expandedIndexPath and indexPath are same, then collpase the cell.
+        if let expandedIndexPath = expandedIndexPath {
             // Remove all unnecessary data
-            self.selectedIndexPath = nil
+            self.expandedIndexPath = nil
             tableView.scrollEnabled = true
             
             // Take the necessary screenshot to make the UI ready for aniamtion
-            let animationBlock = createScreenshotUI(tableView, indexPath: selectedIndexPath, callBack: callBack)
+            let animationBlock = createScreenshotUI(tableView, indexPath: expandedIndexPath, callBack: callBack)
             
-            if let cell = tableView.cellForRowAtIndexPath(selectedIndexPath) as? AccordianTableViewCell {
+            if let cell = tableView.cellForRowAtIndexPath(expandedIndexPath) as? AccordianTableViewCell {
                 // Remove the view that was added as a subView
                 for subview in cell.detailsView.subviews {
                     subview.removeFromSuperview()
@@ -70,7 +63,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
                 self.childViewControllers.last!.removeFromParentViewController()
                 
                 // Reload the tableView content
-                tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
+                tableView.reloadRowsAtIndexPaths([expandedIndexPath], withRowAnimation: .None)
                 
                 // Animate the collapsing of tableView
                 animationBlock()
@@ -83,7 +76,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
     //MARK: Private helper functions
     func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // Since expanding, set the necessary variables
-        self.selectedIndexPath = indexPath
+        self.expandedIndexPath = indexPath
         tableView.scrollEnabled = false
         
         // Add the view controller as a child view controller
@@ -95,7 +88,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
         // Reload the tableView content
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
         
-        // Get the new instance of the cell at the selectedIndexPath
+        // Get the new instance of the cell at the expandedIndexPath
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
             // Add the view controller's view as a subview to details view
             cell.detailsView.addSubview(viewController.view)
@@ -146,7 +139,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
     
     /// Take the necessary screenshot to make the UI ready for aniamtion
     func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) -> AccordianAnimationCompletionBlock {
-        // Get the frame of the selectedIndexPath and the current contentOffset
+        // Get the frame of the expandedIndexPath and the current contentOffset
         let rect = tableView.rectForRowAtIndexPath(indexPath)
         let offset = tableView.contentOffset.y
         
@@ -191,48 +184,46 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
             }
             
             // Animate the expansion/collapsing of table cells
-            UIView.animateWithDuration(animationDuration!, animations: {
-                // Animate the rotation of the arrow view if outlet is set
-                if let arrowView = arrowView {
-                    arrowView.transform = CGAffineTransformRotate(arrowView.transform, self!.getRotationAngleForArrow())
-                }
-                
-                // Scroll the tableView to middle if needed
-                tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
-                
-                // Get the new frame for the selected indexPath
-                let rect = tableView.rectForRowAtIndexPath(indexPath)
-                
-                // Calculate the frame change of tableView
-                let offsetChange = offset - tableView.contentOffset.y
-                
-                // Set the topImageView and bottomImageView frame
-                topImageView.frame.origin.y += offsetChange
-                bottomImageView.frame.origin.y = CGRectGetMaxY(rect) - tableView.contentOffset.y
-                
-                }, completion: { (isSuccess) in
-                    if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
+            if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
+                UIView.animateWithDuration(animationDuration!, animations: {
+                    // Animate the rotation of the arrow view if outlet is set
+                    if let arrowView = arrowView {
+                        arrowView.transform = CGAffineTransformRotate(arrowView.transform, self!.getRotationAngleForArrowForCell(cell))
+                    }
+                    
+                    // Scroll the tableView to middle if needed
+                    tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
+                    
+                    // Get the new frame for the selected indexPath
+                    let rect = tableView.rectForRowAtIndexPath(indexPath)
+                    
+                    // Calculate the frame change of tableView
+                    let offsetChange = offset - tableView.contentOffset.y
+                    
+                    // Set the topImageView and bottomImageView frame
+                    topImageView.frame.origin.y += offsetChange
+                    bottomImageView.frame.origin.y = CGRectGetMaxY(rect) - tableView.contentOffset.y
+                    
+                    }, completion: { (isSuccess) in
                         cell.arrowView?.hidden = false
                         
                         if let arrowView = arrowView {
+                            // Reverse the arrow rotated direction
+                            swap(&cell.arrowImageCurrentDirection, &cell.arrowImageFinalDirection)
+                            
                             cell.arrowView.transform = arrowView.transform
                         }
-                    }
-                    
-                    // On completion, remove the imageViews
-                    topImageView.removeFromSuperview()
-                    bottomImageView.removeFromSuperview()
-                    
-                    // On successful animation, call callBack to indicate the animation completion
-                    if let callBack = callBack {
-                        callBack()
-                    }
-                    
-                    // On completion of animation, call animation completion block if needed
-                    if let animationCompletionBlock = self?.animationCompletionBlock {
-                        animationCompletionBlock()
-                    }
-            })
+                        
+                        // On completion, remove the imageViews
+                        topImageView.removeFromSuperview()
+                        bottomImageView.removeFromSuperview()
+                        
+                        // On successful animation, call callBack to indicate the animation completion
+                        if let callBack = callBack {
+                            callBack()
+                        }
+                })
+            }
         }
         
         return callBack
@@ -251,14 +242,9 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     // Helper function for calcaulation the angle needed to rotate the arrow view
-    func getRotationAngleForArrow() -> CGFloat {
-        if let currentValue = arrowImageCurrentDirection?.rawValue, finalValue = arrowImageFinalDirection?.rawValue {
-            let rotationConstant = finalValue - currentValue
-            
-            return CGFloat(Double(rotationConstant) * M_PI_2)
-        }
+    func getRotationAngleForArrowForCell(cell : AccordianTableViewCell) -> CGFloat {
+        let rotationConstant = cell.arrowImageFinalDirection.rawValue - cell.arrowImageCurrentDirection.rawValue
         
-        // Else default rotation by 90 degrees clockwise/anti-clockwise
-        return CGFloat(M_PI_2)
+        return CGFloat(Double(rotationConstant) * M_PI_2)
     }
 }
