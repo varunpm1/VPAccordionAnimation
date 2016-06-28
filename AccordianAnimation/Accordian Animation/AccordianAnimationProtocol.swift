@@ -21,6 +21,7 @@ typealias AccordianAnimationCompletionBlock = (() -> ())
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
     var selectedIndexPath : NSIndexPath? {get set}
     
+    /// This is used by AccordianAnimationController for handling reverting the animation of the arrow. Not needed by subclasses.
     var animationCompletionBlock : AccordianAnimationCompletionBlock? {get set}
     
     /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
@@ -76,9 +77,11 @@ extension AccordianAnimationProtocol where Self : UIViewController {
             }
         }
     }
-    
+}
+
+private extension AccordianAnimationProtocol where Self : UIViewController {
     //MARK: Private helper functions
-    private func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
+    func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // Since expanding, set the necessary variables
         self.selectedIndexPath = indexPath
         tableView.scrollEnabled = false
@@ -106,7 +109,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     /// Get the screenshot based on the rect size and origin.
-    private func getScreenShot(aView : UIScrollView, forRect rect : CGRect) -> UIImage {
+    func getScreenShot(aView : UIScrollView, forRect rect : CGRect) -> UIImage {
         // Preserve the previous frame and contentOffset of the scrollView (tableView)
         let frame = aView.frame
         let offset = aView.contentOffset
@@ -131,7 +134,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     /// Helper method for addding four sided constraints for necessary view w.r.t to super view
-    private func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
+    func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
         view.translatesAutoresizingMaskIntoConstraints = false
         let leadingConstraint = NSLayoutConstraint(item: view, attribute: .Leading, relatedBy: .Equal, toItem: superView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
         let trailingConstraint = NSLayoutConstraint(item: view, attribute: .Trailing, relatedBy: .Equal, toItem: superView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
@@ -142,7 +145,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     /// Take the necessary screenshot to make the UI ready for aniamtion
-    private func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) -> AccordianAnimationCompletionBlock {
+    func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) -> AccordianAnimationCompletionBlock {
         // Get the frame of the selectedIndexPath and the current contentOffset
         let rect = tableView.rectForRowAtIndexPath(indexPath)
         let offset = tableView.contentOffset.y
@@ -236,7 +239,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     // Helper function to retreive the screenshot inside a imageView
-    private func addScreenshotView(tableView : UITableView, forFrame screenshotRect : CGRect) -> UIImageView {
+    func addScreenshotView(tableView : UITableView, forFrame screenshotRect : CGRect) -> UIImageView {
         let screenshotImage = self.getScreenShot(tableView, forRect: screenshotRect)
         
         // Create the top and bottom image views for showing the animation
@@ -248,7 +251,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     // Helper function for calcaulation the angle needed to rotate the arrow view
-    private func getRotationAngleForArrow() -> CGFloat {
+    func getRotationAngleForArrow() -> CGFloat {
         if let currentValue = arrowImageCurrentDirection?.rawValue, finalValue = arrowImageFinalDirection?.rawValue {
             let rotationConstant = finalValue - currentValue
             
