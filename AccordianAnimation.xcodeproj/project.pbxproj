@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B572B701D22B27000884BE8 /* AccordianAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B572B6F1D22B27000884BE8 /* AccordianAnimationViewController.swift */; };
 		8B5BF4DF1D1D3BA30097F440 /* AccordianAnimationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5BF4DD1D1D3BA30097F440 /* AccordianAnimationProtocol.swift */; };
 		8B5BF4E01D1D3BA30097F440 /* AccordianTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5BF4DE1D1D3BA30097F440 /* AccordianTableViewCell.swift */; };
 		8B5BF4E21D1D3C100097F440 /* SampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5BF4E11D1D3C100097F440 /* SampleViewController.swift */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8B572B6F1D22B27000884BE8 /* AccordianAnimationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordianAnimationViewController.swift; sourceTree = "<group>"; };
 		8B5BF4DD1D1D3BA30097F440 /* AccordianAnimationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordianAnimationProtocol.swift; sourceTree = "<group>"; };
 		8B5BF4DE1D1D3BA30097F440 /* AccordianTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordianTableViewCell.swift; sourceTree = "<group>"; };
 		8B5BF4E11D1D3C100097F440 /* SampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleViewController.swift; sourceTree = "<group>"; };
@@ -46,6 +48,7 @@
 		8B5BF4DC1D1D3BA30097F440 /* Accordian Animation */ = {
 			isa = PBXGroup;
 			children = (
+				8B572B6F1D22B27000884BE8 /* AccordianAnimationViewController.swift */,
 				8B5BF4DD1D1D3BA30097F440 /* AccordianAnimationProtocol.swift */,
 				8B5BF4DE1D1D3BA30097F440 /* AccordianTableViewCell.swift */,
 			);
@@ -161,6 +164,7 @@
 				8B5BF4E01D1D3BA30097F440 /* AccordianTableViewCell.swift in Sources */,
 				8B5BF4DF1D1D3BA30097F440 /* AccordianAnimationProtocol.swift in Sources */,
 				8B5DF4371D1BCE2300B91D78 /* AppDelegate.swift in Sources */,
+				8B572B701D22B27000884BE8 /* AccordianAnimationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

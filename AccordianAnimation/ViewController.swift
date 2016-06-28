@@ -8,15 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController, AccordianAnimationProtocol {
+class ViewController: AccordianAnimationViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var selectedIndexPath : NSIndexPath?
-    var arrowImageFinalDirection: ArrowDirection = .Down
-    var arrowImageCurrentDirection: ArrowDirection = .Right
-    
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.

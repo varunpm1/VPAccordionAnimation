@@ -21,6 +21,8 @@ typealias AccordianAnimationCompletionBlock = (() -> ())
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
     var selectedIndexPath : NSIndexPath? {get set}
     
+    var animationCompletionBlock : AccordianAnimationCompletionBlock? {get set}
+    
     /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
     optional var animationDuration : NSTimeInterval {get set}
     
@@ -155,7 +157,7 @@ extension AccordianAnimationProtocol where Self : UIViewController {
             if cell.arrowView != nil {
                 arrowView = NSKeyedUnarchiver.unarchiveObjectWithData(NSKeyedArchiver.archivedDataWithRootObject(cell.arrowView)) as? UIView
                 arrowView?.translatesAutoresizingMaskIntoConstraints = true
-                arrowView?.frame = CGRect(x: cell.arrowView.frame.origin.x, y: CGRectGetHeight(topImageRect) - CGRectGetMaxY(cell.arrowView.frame), width: cell.arrowView.frame.size.width, height: cell.arrowView.frame.size.height)
+                arrowView?.frame = CGRect(x: cell.arrowView.frame.origin.x, y: rect.origin.y - CGRectGetMinY(topImageRect) + cell.arrowView.frame.origin.y, width: cell.arrowView.frame.size.width, height: cell.arrowView.frame.size.height)
                 
                 // Hide the arrow View before taking a screenshot. Unhide after animation
                 cell.arrowView.hidden = true
@@ -221,6 +223,11 @@ extension AccordianAnimationProtocol where Self : UIViewController {
                     // On successful animation, call callBack to indicate the animation completion
                     if let callBack = callBack {
                         callBack()
+                    }
+                    
+                    // On completion of animation, call animation completion block if needed
+                    if let animationCompletionBlock = self?.animationCompletionBlock {
+                        animationCompletionBlock()
                     }
             })
         }
