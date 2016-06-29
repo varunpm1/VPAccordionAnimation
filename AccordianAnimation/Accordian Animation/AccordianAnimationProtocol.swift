@@ -10,19 +10,12 @@ import UIKit
 
 typealias AccordianAnimationCompletionBlock = (() -> ())
 
-@objc enum ArrowDirection : Int {
-    case Left
-    case Up
-    case Right
-    case Down
-}
-
-@objc protocol AccordianAnimationProtocol : class {
+protocol AccordianAnimationProtocol : class {
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
     var expandedIndexPath : NSIndexPath? {get set}
     
     /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
-    optional var animationDuration : NSTimeInterval {get set}
+    var animationDuration : NSTimeInterval {get set}
 }
 
 extension AccordianAnimationProtocol where Self : AccordianAnimationViewController {
@@ -102,26 +95,38 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
     }
     
     /// Get the screenshot based on the rect size and origin.
-    func getScreenShot(aView : UIScrollView, forRect rect : CGRect) -> UIImage {
+    func getScreenShot(aView : UIView, forRect rect : CGRect) -> UIImage {
         // Preserve the previous frame and contentOffset of the scrollView (tableView)
         let frame = aView.frame
-        let offset = aView.contentOffset
+        var offset : CGPoint?
+        
+        // Get offset only if view is scrollView
+        if let aView = aView as? UIScrollView {
+            offset = aView.contentOffset
+        }
         
         UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.mainScreen().scale)
         
         // Move the frame for the screenshot starting position
         CGContextTranslateCTM(UIGraphicsGetCurrentContext(), rect.origin.x, -rect.origin.y);
         
-        // Set the new contentOffset for the view.
-        aView.contentOffset.y = rect.origin.y
+        // Set the new contentOffset for the view only if it's a scrollView
+        if let aView = aView as? UIScrollView {
+            aView.contentOffset.y = rect.origin.y
+        }
+        
         aView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        // Reset the previous frame and contentOffset
+        // Reset the previous frame
         aView.frame = frame
-        aView.contentOffset = offset
+        
+        // Reset offset only if view is scrollView
+        if let aView = aView as? UIScrollView {
+            aView.contentOffset = offset!
+        }
         
         return image
     }
@@ -149,14 +154,24 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
         
         // Get the instance of arrowView if animation needed for rotating the arrow
         var arrowView : UIView?
+        
+        // Bool for identifying whether cell is expanding or collapsing
+        var isCollapsing = false
+        
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
             if cell.arrowView != nil {
-                arrowView = NSKeyedUnarchiver.unarchiveObjectWithData(NSKeyedArchiver.archivedDataWithRootObject(cell.arrowView)) as? UIView
-                arrowView?.translatesAutoresizingMaskIntoConstraints = true
+                // Get the screenshot of the arrowImage
+                let arrowImage = getScreenShot(cell.arrowView, forRect: cell.arrowView.bounds)
+                arrowView = UIImageView(image: arrowImage)
                 arrowView?.frame = CGRect(x: cell.arrowView.frame.origin.x, y: rect.origin.y - CGRectGetMinY(topImageRect) + cell.arrowView.frame.origin.y, width: cell.arrowView.frame.size.width, height: cell.arrowView.frame.size.height)
                 
                 // Hide the arrow View before taking a screenshot. Unhide after animation
                 cell.arrowView.hidden = true
+                
+                //FIXME: direction
+                if (cell.arrowView as! UIImageView).image!.imageOrientation == .Right {
+                    isCollapsing = true
+                }
             }
         }
         
@@ -167,11 +182,6 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
         // Add the image views on top of self
         self.view.addSubview(topImageView)
         self.view.addSubview(bottomImageView)
-        
-        var animationDuration = self.animationDuration
-        if animationDuration == nil {
-            animationDuration = 0.4
-        }
         
         // Check if arrow view is added. If yes, then add it to the added screenshot
         if let arrowView = arrowView {
@@ -185,10 +195,10 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
             
             // Animate the expansion/collapsing of table cells
             if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
-                UIView.animateWithDuration(animationDuration!, animations: {
+                UIView.animateWithDuration(self!.animationDuration, animations: {
                     // Animate the rotation of the arrow view if outlet is set
                     if let arrowView = arrowView {
-                        arrowView.transform = CGAffineTransformRotate(arrowView.transform, self!.getRotationAngleForArrowForCell(cell))
+                        arrowView.transform = CGAffineTransformRotate(arrowView.transform, (isCollapsing ? -1 : 1) * self!.getRotationAngleForArrowForCell(cell))
                     }
                     
                     // Scroll the tableView to middle if needed
@@ -206,13 +216,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
                     
                     }, completion: { (isSuccess) in
                         cell.arrowView?.hidden = false
-                        
-                        if let arrowView = arrowView {
-                            // Reverse the arrow rotated direction
-                            swap(&cell.arrowImageCurrentDirection, &cell.arrowImageFinalDirection)
-                            
-                            cell.arrowView.transform = arrowView.transform
-                        }
+                        arrowView = nil
                         
                         // On completion, remove the imageViews
                         topImageView.removeFromSuperview()

@@ -9,6 +9,13 @@
 import UIKit
 
 class AccordianTableViewCell: UITableViewCell {
+    enum ArrowDirection : Int {
+        case Left
+        case Up
+        case Right
+        case Down
+    }
+    
     /** **Important: The Height constraint has to be set for infoView instead of bottom constraint** 
     
     Info view should be the container view holding all the views as subviews that represent the cell in unexpanded state */
@@ -22,6 +29,7 @@ class AccordianTableViewCell: UITableViewCell {
     
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
     var arrowImageCurrentDirection : ArrowDirection = .Right
+    /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
     var arrowImageFinalDirection : ArrowDirection = .Down
     
     override func awakeFromNib() {

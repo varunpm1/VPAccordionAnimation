@@ -24,7 +24,7 @@ class ViewController: AccordianAnimationViewController {
     }
 }
 
-extension ViewController : UITableViewDataSource, UITableViewDelegate {
+extension ViewController : UITableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
