@@ -103,6 +103,11 @@ class AccordianTableViewCell: UITableViewCell {
         super.prepareForReuse()
         
         self.arrowView?.hidden = false
+        
+        // Remove subviews from details view when reusing cells
+        for subview in detailsView.subviews {
+            subview.removeFromSuperview()
+        }
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
