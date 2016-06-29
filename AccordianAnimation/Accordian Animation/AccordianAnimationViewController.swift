@@ -11,10 +11,13 @@ import UIKit
 class AccordianAnimationViewController: UIViewController, AccordianAnimationProtocol, UITableViewDelegate {
     
     // Expanded indexPath for storing the selected cell
-    var expandedIndexPath : NSIndexPath?
+    var expandedIndexPaths : [NSIndexPath] = []
     
     // Default value for animation
     var animationDuration: NSTimeInterval = 0.4
+    
+    // Default value for disabling multiple expanding of cells
+    var allowMultipleCellExpansion: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +33,7 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
         // If the expandedIndexPath is the same as the cell's indexPath, then set the arrow image (if present) to final state, else in initial state
         if let cell = cell as? AccordianTableViewCell {
             if let arrowView = cell.arrowView {
-                if expandedIndexPath == indexPath {
+                if expandedIndexPaths.contains(indexPath) == true {
                     // Set required direction for the selected indexPath
                     cell.updateImageForView(arrowView, currentDirection: cell.arrowImageFinalDirection)
                 }

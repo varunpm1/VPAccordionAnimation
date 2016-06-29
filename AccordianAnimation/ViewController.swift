@@ -16,6 +16,7 @@ class ViewController: AccordianAnimationViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         tableView.tableFooterView = UIView()
+        edgesForExtendedLayout = .None
     }
 
     override func didReceiveMemoryWarning() {
@@ -41,7 +42,7 @@ extension ViewController : UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if expandedIndexPath == indexPath {
+        if expandedIndexPaths.contains(indexPath) == true {
             return 340
         }
         else {
@@ -52,7 +53,7 @@ extension ViewController : UITableViewDataSource {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        if expandedIndexPath == indexPath {
+        if expandedIndexPaths.contains(indexPath) == true {
             self.hideViewController(inTableView: tableView, forIndexPath: indexPath, callBack: nil)
         }
         else {
