@@ -156,7 +156,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
         var arrowView : UIView?
         
         // Bool for identifying whether cell is expanding or collapsing
-        var isCollapsing = false
+        var isExpanding = false
         
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
             if cell.arrowView != nil {
@@ -168,9 +168,19 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
                 // Hide the arrow View before taking a screenshot. Unhide after animation
                 cell.arrowView.hidden = true
                 
-                //FIXME: direction
-                if (cell.arrowView as! UIImageView).image!.imageOrientation == .Right {
-                    isCollapsing = true
+                // Check if the cell is collapsing or not
+                var image : UIImage?
+                
+                // Get the current image from imageView or buttonView
+                if let imageView = cell.arrowView as? UIImageView {
+                    image = imageView.image
+                }
+                else if let buttonView = cell.arrowView as? UIButton {
+                    image = buttonView.currentImage
+                }
+                
+                if let image = image where image.imageOrientation == .Up {
+                    isExpanding = true
                 }
             }
         }
@@ -198,7 +208,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
                 UIView.animateWithDuration(self!.animationDuration, animations: {
                     // Animate the rotation of the arrow view if outlet is set
                     if let arrowView = arrowView {
-                        arrowView.transform = CGAffineTransformRotate(arrowView.transform, (isCollapsing ? -1 : 1) * self!.getRotationAngleForArrowForCell(cell))
+                        arrowView.transform = CGAffineTransformRotate(arrowView.transform, (isExpanding ? 1 : -1) * self!.getRotationAngleForArrowForCell(cell))
                     }
                     
                     // Scroll the tableView to middle if needed
@@ -248,7 +258,8 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
     // Helper function for calcaulation the angle needed to rotate the arrow view
     func getRotationAngleForArrowForCell(cell : AccordianTableViewCell) -> CGFloat {
         let rotationConstant = cell.arrowImageFinalDirection.rawValue - cell.arrowImageCurrentDirection.rawValue
+        let midPiValue = 3.141593 / 2
         
-        return CGFloat(Double(rotationConstant) * M_PI_2)
+        return CGFloat(Double(rotationConstant) * midPiValue)
     }
 }

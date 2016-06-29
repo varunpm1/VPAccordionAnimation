@@ -31,38 +31,13 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
         if let cell = cell as? AccordianTableViewCell {
             if let arrowView = cell.arrowView {
                 if expandedIndexPath == indexPath {
-                    //FIXME: image name and direction
-                    updateImageForView(arrowView, direction: .Right)
+                    // Set required direction for the selected indexPath
+                    cell.updateImageForView(arrowView, currentDirection: cell.arrowImageFinalDirection)
                 }
                 else {
-                    updateImageForView(arrowView, direction: .Up)
+                    // Set "Up" direction to reset the image's default position
+                    cell.updateImageForView(arrowView, currentDirection: cell.arrowImageCurrentDirection)
                 }
-            }
-        }
-    }
-    
-    // Update the image view to reset the direction of arrowView
-    private func updateImageForView(view : UIView, direction : UIImageOrientation) {
-        var image : UIImage?
-        
-        // Get the current image from imageView or buttonView
-        if let imageView = view as? UIImageView {
-            image = imageView.image
-        }
-        else if let buttonView = view as? UIButton {
-            image = buttonView.currentImage
-        }
-        
-        if let image = image {
-            // Reset the image based on the direction
-            let cgiImage = UIImage(CGImage: image.CGImage!, scale: UIScreen.mainScreen().scale, orientation: direction)
-            
-            // Update the rotated image back to view
-            if let imageView = view as? UIImageView {
-                imageView.image = cgiImage
-            }
-            else if let buttonView = view as? UIButton {
-                buttonView.setImage(cgiImage, forState: .Normal)
             }
         }
     }

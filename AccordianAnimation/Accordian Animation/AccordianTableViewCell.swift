@@ -14,6 +14,25 @@ class AccordianTableViewCell: UITableViewCell {
         case Up
         case Right
         case Down
+        
+        func getOrientationWithDefaultOrientation(defaultOrientation : ArrowDirection) -> UIImageOrientation {
+            let displacement = self.rawValue - defaultOrientation.rawValue
+            
+            switch displacement {
+            case 0:
+                // Set the default direction of the image
+                return UIImageOrientation.Up
+            case 1, -3:
+                // Rotate by 90 degress to Clock wise direction
+                return UIImageOrientation.Right
+            case 2, -2:
+                // Rotate by 180 degress to Clock wise direction
+                return UIImageOrientation.Down
+            default:
+                // Rotate by 90 degress to Anti-Clock wise direction
+                return UIImageOrientation.Left
+            }
+        }
     }
     
     /** **Important: The Height constraint has to be set for infoView instead of bottom constraint** 
@@ -95,5 +114,33 @@ class AccordianTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    //MARK: Update the cell's arrow image
+    // Update the image view to reset the direction of arrowView
+    func updateImageForView(view : UIView, currentDirection : ArrowDirection) {
+        var image : UIImage?
+        let direction = currentDirection.getOrientationWithDefaultOrientation(self.arrowImageCurrentDirection)
+        
+        // Get the current image from imageView or buttonView
+        if let imageView = view as? UIImageView {
+            image = imageView.image
+        }
+        else if let buttonView = view as? UIButton {
+            image = buttonView.currentImage
+        }
+        
+        if let image = image {
+            // Reset the image based on the direction
+            let cgiImage = UIImage(CGImage: image.CGImage!, scale: UIScreen.mainScreen().scale, orientation: direction)
+            
+            // Update the rotated image back to view
+            if let imageView = view as? UIImageView {
+                imageView.image = cgiImage
+            }
+            else if let buttonView = view as? UIButton {
+                buttonView.setImage(cgiImage, forState: .Normal)
+            }
+        }
     }
 }
