@@ -33,13 +33,13 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
         // If the expandedIndexPath is the same as the cell's indexPath, then set the arrow image (if present) to final state, else in initial state
         if let cell = cell as? AccordianTableViewCell {
             if let arrowView = cell.arrowView {
-                if expandedIndexPaths.contains(indexPath) == true {
+                if expandedIndexPaths.contains(indexPath) {
                     // Set required direction for the selected indexPath
                     cell.updateImageForView(arrowView, currentDirection: cell.arrowImageFinalDirection)
                 }
                 else {
                     // Set "Up" direction to reset the image's default position
-                    cell.updateImageForView(arrowView, currentDirection: cell.arrowImageCurrentDirection)
+                    cell.updateImageForView(arrowView, currentDirection: cell.arrowImageInitialDirection)
                 }
             }
         }

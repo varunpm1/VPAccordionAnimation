@@ -47,7 +47,7 @@ class AccordianTableViewCell: UITableViewCell {
     var detailsView: UIView!
     
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
-    var arrowImageCurrentDirection : ArrowDirection = .Right
+    var arrowImageInitialDirection : ArrowDirection = .Right
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
     var arrowImageFinalDirection : ArrowDirection = .Down
     
@@ -115,7 +115,7 @@ class AccordianTableViewCell: UITableViewCell {
     // Update the image view to reset the direction of arrowView
     func updateImageForView(view : UIView, currentDirection : ArrowDirection) {
         var image : UIImage?
-        let direction = currentDirection.getOrientationWithDefaultOrientation(self.arrowImageCurrentDirection)
+        let direction = currentDirection.getOrientationWithDefaultOrientation(self.arrowImageInitialDirection)
         
         // Get the current image from imageView or buttonView
         if let imageView = view as? UIImageView {

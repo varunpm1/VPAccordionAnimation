@@ -27,7 +27,7 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
     func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If any cell is expanded, then collapse it first
         if expandedIndexPaths.count > 0 {
-            if allowMultipleCellExpansion {
+            if !allowMultipleCellExpansion {
                 self.hideViewController(inTableView: tableView, forIndexPath: expandedIndexPaths.first!, callBack: {
                     // After hiding all other cells, expand the current cell
                     self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
@@ -77,7 +77,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
         // Since expanding, set the necessary variables
         
         // If indexPath is already present, then do nothing
-        if self.expandedIndexPaths.contains(indexPath) == true {
+        if self.expandedIndexPaths.contains(indexPath) {
             return
         }
         
@@ -277,7 +277,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
     
     // Helper function for calcaulation the angle needed to rotate the arrow view
     func getRotationAngleForArrowForCell(cell : AccordianTableViewCell) -> CGFloat {
-        let rotationConstant = cell.arrowImageFinalDirection.rawValue - cell.arrowImageCurrentDirection.rawValue
+        let rotationConstant = cell.arrowImageFinalDirection.rawValue - cell.arrowImageInitialDirection.rawValue
         let midPiValue = 3.141593 / 2
         
         return CGFloat(Double(rotationConstant) * midPiValue)
