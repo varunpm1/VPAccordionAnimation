@@ -189,14 +189,21 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
         let topImageView = self.addScreenshotView(tableView, forFrame: topImageRect)
         let bottomImageView = self.addScreenshotView(tableView, forFrame: bottomImageRect)
         
+        // Conatiner view for holding the screenshot image views
+        let containerView = UIView(frame: tableView.frame)
+        containerView.backgroundColor = UIColor.clearColor()
+        containerView.clipsToBounds = true
+        
         // Add the image views on top of self
-        self.view.addSubview(topImageView)
-        self.view.addSubview(bottomImageView)
+        containerView.addSubview(topImageView)
+        containerView.addSubview(bottomImageView)
         
         // Check if arrow view is added. If yes, then add it to the added screenshot
         if let arrowView = arrowView {
             topImageView.addSubview(arrowView)
         }
+        
+        self.view.addSubview(containerView)
         
         let callBack = { [weak self] in
             if self == nil {
@@ -231,6 +238,7 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
                         // On completion, remove the imageViews
                         topImageView.removeFromSuperview()
                         bottomImageView.removeFromSuperview()
+                        containerView.removeFromSuperview()
                         
                         // On successful animation, call callBack to indicate the animation completion
                         if let callBack = callBack {
