@@ -16,6 +16,7 @@ enum DefaultState {
 }
 
 protocol AccordianAnimationProtocol : class {
+    //MARK: Protocol Variables
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each key will be expanded index path and value will be the expanded view. Used when scrolling is enabled.
     var expandedIndexPathsData : [NSIndexPath : UIView] {get set}
     
@@ -30,6 +31,16 @@ protocol AccordianAnimationProtocol : class {
     
     /// Enum value that specifies the state of all the cells. All the cells can be expanded or collapsed. Defaults to CollapsedAll
     var cellDefaultState : DefaultState {get set}
+    
+    //MARK: Protocol Functions
+    /// Protocol function to retreive the number of sections in current tableView - Used only during ExpandedAll state
+    func getNumberOfSectionsInTableView() -> Int
+    
+    /// Protocol function to retreive the number of rows in a specific section in current tableView - Used only during ExpandedAll state
+    func getNumberOfRowsInTableViewForSection(section : Int) -> Int
+    
+    /// Protocol function to create the view controller for the first time - Used only during ExpandedAll state
+    func createViewControllerForIndexPath(indexPath : NSIndexPath) -> UIViewController?
 }
 
 extension AccordianAnimationProtocol where Self : AccordianAnimationViewController {

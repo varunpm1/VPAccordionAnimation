@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AccordianAnimationViewController: UIViewController, AccordianAnimationProtocol, UITableViewDelegate {
+class AccordianAnimationViewController: UIViewController {
     
     // Expanded indexPath for storing the selected cell
     var expandedIndexPathsData : [NSIndexPath : UIView] = [:]
@@ -23,7 +23,13 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
     var allowTableViewScrollingWhenExpanded: Bool = false
     
     // Default value for collapsed state by deafult
-    var cellDefaultState: DefaultState = DefaultState.CollapsedAll
+    var cellDefaultState: DefaultState = DefaultState.CollapsedAll {
+        didSet {
+            if cellDefaultState == DefaultState.ExpandedAll {
+                populateExpandedIndexPathsData()
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +40,59 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
         // Dispose of any resources that can be recreated.
     }
     
+    func populateExpandedIndexPathsData() {
+        let sections = self.getNumberOfSectionsInTableView()
+        for sectionIndex in 0.stride(to: sections, by: 1) {
+            let rows = self.getNumberOfRowsInTableViewForSection(sectionIndex)
+            
+            for rowIndex in 0.stride(to: rows, by: 1) {
+                let indexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
+                
+                let viewController = createViewControllerForIndexPath(indexPath)
+                
+                if let viewController = viewController {
+                    expandedIndexPathsData[indexPath] = viewController.view
+                    addChildViewController(viewController)
+                }
+            }
+        }
+    }
+    
+    
+    
+    /// Helper method for addding four sided constraints for necessary view w.r.t to super view
+    func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let leadingConstraint = NSLayoutConstraint(item: view, attribute: .Leading, relatedBy: .Equal, toItem: superView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
+        let trailingConstraint = NSLayoutConstraint(item: view, attribute: .Trailing, relatedBy: .Equal, toItem: superView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
+        let topConstraint = NSLayoutConstraint(item: view, attribute: .Top, relatedBy: .Equal, toItem: superView, attribute: .Top, multiplier: 1.0, constant: 0.0)
+        let bottomConstraint = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: superView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+        
+        superView.addConstraints([leadingConstraint, trailingConstraint, topConstraint, bottomConstraint])
+    }
+    
+    /// Helper method to check if indexPath is already expanded or not
+    func isIndexPathExpanded(indexPath : NSIndexPath) -> Bool {
+        return expandedIndexPathsData.keys.contains(indexPath)
+    }
+}
+
+/// Implement the protocol methods in extension. Else the override in subclass won't work.
+extension AccordianAnimationViewController : AccordianAnimationProtocol {
+    func getNumberOfSectionsInTableView() -> Int {
+        return 0
+    }
+    
+    func getNumberOfRowsInTableViewForSection(section: Int) -> Int {
+        return 0
+    }
+    
+    func createViewControllerForIndexPath(indexPath: NSIndexPath) -> UIViewController? {
+        return nil
+    }
+}
+
+extension AccordianAnimationViewController : UITableViewDelegate {
     /// This method reinitializes arrow image position if needed. If arrow animation is needed and subclasses want this delegate method to be implemented, then subclasses has to call this method using super. Else animation won't work as needed
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         // If the expandedIndexPath is the same as the cell's indexPath, then set the arrow image (if present) to final state, else in initial state
@@ -51,21 +110,5 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
                 cell.updateImageForViewWithCurrentDirection(cell.arrowImageInitialDirection)
             }
         }
-    }
-    
-    /// Helper method for addding four sided constraints for necessary view w.r.t to super view
-    func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
-        view.translatesAutoresizingMaskIntoConstraints = false
-        let leadingConstraint = NSLayoutConstraint(item: view, attribute: .Leading, relatedBy: .Equal, toItem: superView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
-        let trailingConstraint = NSLayoutConstraint(item: view, attribute: .Trailing, relatedBy: .Equal, toItem: superView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
-        let topConstraint = NSLayoutConstraint(item: view, attribute: .Top, relatedBy: .Equal, toItem: superView, attribute: .Top, multiplier: 1.0, constant: 0.0)
-        let bottomConstraint = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: superView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-        
-        superView.addConstraints([leadingConstraint, trailingConstraint, topConstraint, bottomConstraint])
-    }
-    
-    /// Check if indexPath is already expanded or not
-    func isIndexPathExpanded(indexPath : NSIndexPath) -> Bool {
-        return expandedIndexPathsData.keys.contains(indexPath)
     }
 }

@@ -14,14 +14,32 @@ class ViewController: AccordianAnimationViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view, typically from a nib.
         tableView.tableFooterView = UIView()
         edgesForExtendedLayout = .None
+        
+        cellDefaultState = DefaultState.ExpandedAll
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func getNumberOfSectionsInTableView() -> Int {
+        return 1
+    }
+    
+    override func getNumberOfRowsInTableViewForSection(section : Int) -> Int {
+        return 50
+    }
+    
+    override func createViewControllerForIndexPath(indexPath: NSIndexPath) -> UIViewController? {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        
+        return viewController
     }
 }
 
