@@ -118,15 +118,15 @@ class AccordianTableViewCell: UITableViewCell {
     
     //MARK: Update the cell's arrow image
     // Update the image view to reset the direction of arrowView
-    func updateImageForView(view : UIView, currentDirection : ArrowDirection) {
+    func updateImageForViewWithCurrentDirection(currentDirection : ArrowDirection) {
         var image : UIImage?
         let direction = currentDirection.getOrientationWithDefaultOrientation(self.arrowImageInitialDirection)
         
         // Get the current image from imageView or buttonView
-        if let imageView = view as? UIImageView {
+        if let imageView = self.arrowView as? UIImageView {
             image = imageView.image
         }
-        else if let buttonView = view as? UIButton {
+        else if let buttonView = self.arrowView as? UIButton {
             image = buttonView.currentImage
         }
         
@@ -135,10 +135,10 @@ class AccordianTableViewCell: UITableViewCell {
             let cgiImage = UIImage(CGImage: image.CGImage!, scale: UIScreen.mainScreen().scale, orientation: direction)
             
             // Update the rotated image back to view
-            if let imageView = view as? UIImageView {
+            if let imageView = self.arrowView as? UIImageView {
                 imageView.image = cgiImage
             }
-            else if let buttonView = view as? UIButton {
+            else if let buttonView = self.arrowView as? UIButton {
                 buttonView.setImage(cgiImage, forState: .Normal)
             }
         }

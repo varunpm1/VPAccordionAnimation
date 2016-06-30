@@ -10,6 +10,11 @@ import UIKit
 
 typealias AccordianAnimationCompletionBlock = (() -> ())
 
+enum DefaultState {
+    case ExpandedAll
+    case CollapsedAll
+}
+
 protocol AccordianAnimationProtocol : class {
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each key will be expanded index path and value will be the expanded view. Used when scrolling is enabled.
     var expandedIndexPathsData : [NSIndexPath : UIView] {get set}
@@ -22,6 +27,9 @@ protocol AccordianAnimationProtocol : class {
     
     /// Bool variable that allow or disallow tableView scrolling when expanded. If allowMultipleCellExpansion is set to false, then this will be set to false. Defaults to false.
     var allowTableViewScrollingWhenExpanded : Bool {get set}
+    
+    /// Enum value that specifies the state of all the cells. All the cells can be expanded or collapsed. Defaults to CollapsedAll
+    var cellDefaultState : DefaultState {get set}
 }
 
 extension AccordianAnimationProtocol where Self : AccordianAnimationViewController {
@@ -56,6 +64,7 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
                 tableView.scrollEnabled = true
             }
             
+            //FIXME: Handle collapsing when the allowTableViewScrollingWhenExpanded is set true but allowsMultipleCellExpansion is set to false.
             // Take the necessary screenshot to make the UI ready for aniamtion
             if tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
                 let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)

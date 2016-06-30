@@ -22,6 +22,9 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
     // Default value for disabling scrolling when expanded
     var allowTableViewScrollingWhenExpanded: Bool = false
     
+    // Default value for collapsed state by deafult
+    var cellDefaultState: DefaultState = DefaultState.CollapsedAll
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -35,19 +38,17 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         // If the expandedIndexPath is the same as the cell's indexPath, then set the arrow image (if present) to final state, else in initial state
         if let cell = cell as? AccordianTableViewCell {
-            if let arrowView = cell.arrowView {
-                if isIndexPathExpanded(indexPath) {
-                    // Set required direction for the selected indexPath
-                    cell.updateImageForView(arrowView, currentDirection: cell.arrowImageFinalDirection)
-                    
-                    // Add the view back if needed. When scrolling is enabled
-                    cell.detailsView.addSubview(expandedIndexPathsData[indexPath]!)
-                    addFourSidedConstraintForView(expandedIndexPathsData[indexPath]!, withSuperView: cell.detailsView)
-                }
-                else {
-                    // Set "Up" direction to reset the image's default position
-                    cell.updateImageForView(arrowView, currentDirection: cell.arrowImageInitialDirection)
-                }
+            if isIndexPathExpanded(indexPath) {
+                // Set required direction for the selected indexPath
+                cell.updateImageForViewWithCurrentDirection(cell.arrowImageFinalDirection)
+                
+                // Add the view back if needed. When scrolling is enabled
+                cell.detailsView.addSubview(expandedIndexPathsData[indexPath]!)
+                addFourSidedConstraintForView(expandedIndexPathsData[indexPath]!, withSuperView: cell.detailsView)
+            }
+            else {
+                // Set "Up" direction to reset the image's default position
+                cell.updateImageForViewWithCurrentDirection(cell.arrowImageInitialDirection)
             }
         }
     }
