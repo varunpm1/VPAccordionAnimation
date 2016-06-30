@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
-               BuildableName = "AccordianAnimation.app"
-               BlueprintName = "AccordianAnimation"
-               ReferencedContainer = "container:AccordianAnimation.xcodeproj">
+               BuildableName = "AccordionAnimation.app"
+               BlueprintName = "AccordionAnimation"
+               ReferencedContainer = "container:AccordionAnimation.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
-            BuildableName = "AccordianAnimation.app"
-            BlueprintName = "AccordianAnimation"
-            ReferencedContainer = "container:AccordianAnimation.xcodeproj">
+            BuildableName = "AccordionAnimation.app"
+            BlueprintName = "AccordionAnimation"
+            ReferencedContainer = "container:AccordionAnimation.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
-            BuildableName = "AccordianAnimation.app"
-            BlueprintName = "AccordianAnimation"
-            ReferencedContainer = "container:AccordianAnimation.xcodeproj">
+            BuildableName = "AccordionAnimation.app"
+            BlueprintName = "AccordionAnimation"
+            ReferencedContainer = "container:AccordionAnimation.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
-            BuildableName = "AccordianAnimation.app"
-            BlueprintName = "AccordianAnimation"
-            ReferencedContainer = "container:AccordianAnimation.xcodeproj">
+            BuildableName = "AccordionAnimation.app"
+            BlueprintName = "AccordionAnimation"
+            ReferencedContainer = "container:AccordionAnimation.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -1,6 +1,6 @@
 //
-//  AccordianTableViewCell.swift
-//  AccordianAnimation
+//  AccordionTableViewCell.swift
+//  AccordionAnimation
 //
 //  Created by Varun on 23/06/16.
 //  Copyright © 2016 YMediaLabs. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AccordianTableViewCell: UITableViewCell {
+class AccordionTableViewCell: UITableViewCell {
     enum ArrowDirection : Int {
         case Left
         case Up

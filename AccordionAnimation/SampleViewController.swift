@@ -1,7 +1,7 @@
 
 //
 //  SampleViewController.swift
-//  AccordianAnimation
+//  AccordionAnimation
 //
 //  Created by Varun on 24/06/16.
 //  Copyright © 2016 YMediaLabs. All rights reserved.

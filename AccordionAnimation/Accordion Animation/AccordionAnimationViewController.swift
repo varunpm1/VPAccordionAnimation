@@ -1,6 +1,6 @@
 //
-//  AccordianAnimationViewController.swift
-//  AccordianAnimation
+//  AccordionAnimationViewController.swift
+//  AccordionAnimation
 //
 //  Created by Varun on 28/06/16.
 //  Copyright © 2016 YMediaLabs. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AccordianAnimationViewController: UIViewController {
+class AccordionAnimationViewController: UIViewController {
     
     // Expanded indexPath for storing the selected cell
     var expandedIndexPathsData : [NSIndexPath : UIView] = [:]
@@ -88,7 +88,7 @@ class AccordianAnimationViewController: UIViewController {
 }
 
 /// Implement the protocol methods in extension. Else the override in subclass won't work.
-extension AccordianAnimationViewController : AccordianAnimationProtocol {
+extension AccordionAnimationViewController : AccordionAnimationProtocol {
     func getNumberOfSectionsInTableView() -> Int {
         return 0
     }
@@ -102,11 +102,11 @@ extension AccordianAnimationViewController : AccordianAnimationProtocol {
     }
 }
 
-extension AccordianAnimationViewController : UITableViewDelegate {
+extension AccordionAnimationViewController : UITableViewDelegate {
     /// This method reinitializes arrow image position if needed. If arrow animation is needed and subclasses want this delegate method to be implemented, then subclasses has to call this method using super. Else animation won't work as needed
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         // If the expandedIndexPath is the same as the cell's indexPath, then set the arrow image (if present) to final state, else in initial state
-        if let cell = cell as? AccordianTableViewCell {
+        if let cell = cell as? AccordionTableViewCell {
             if isIndexPathExpanded(indexPath) {
                 // Set required direction for the selected indexPath
                 cell.updateImageForViewWithCurrentDirection(cell.arrowImageFinalDirection)

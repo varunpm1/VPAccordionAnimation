@@ -1,6 +1,6 @@
 //
 //  CustomTableViewCell.swift
-//  AccordianAnimation
+//  AccordionAnimation
 //
 //  Created by Varun on 23/06/16.
 //  Copyright © 2016 YMediaLabs. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CustomTableViewCell: AccordianTableViewCell {
+class CustomTableViewCell: AccordionTableViewCell {
 
     @IBOutlet weak var displayLabel: UILabel!
     
