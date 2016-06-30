@@ -17,7 +17,14 @@ class AccordianAnimationViewController: UIViewController {
     var animationDuration: NSTimeInterval = 0.4
     
     // Default value for disabling multiple expanding of cells
-    var allowMultipleCellExpansion: Bool = false
+    var allowMultipleCellExpansion: Bool = false {
+        didSet {
+            // Check if expandAll is set. If yes, and if allowMultipleCellExpansion is false, then forcefully set allowMultipleCellExpansion to true
+            if cellDefaultState == DefaultState.ExpandedAll && allowMultipleCellExpansion == false {
+                allowMultipleCellExpansion = true
+            }
+        }
+    }
     
     // Default value for disabling scrolling when expanded
     var allowTableViewScrollingWhenExpanded: Bool = false
@@ -27,6 +34,9 @@ class AccordianAnimationViewController: UIViewController {
         didSet {
             if cellDefaultState == DefaultState.ExpandedAll {
                 populateExpandedIndexPathsData()
+                
+                // Forcefully set allowMultipleCellExpansion to true, since all cells are expanded. So multiple cell expansion should be true
+                allowMultipleCellExpansion = true
             }
         }
     }

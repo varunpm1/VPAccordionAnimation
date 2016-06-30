@@ -32,7 +32,7 @@ class ViewController: AccordianAnimationViewController {
     }
     
     override func getNumberOfRowsInTableViewForSection(section : Int) -> Int {
-        return 50
+        return 10
     }
     
     override func createViewControllerForIndexPath(indexPath: NSIndexPath) -> UIViewController? {
@@ -49,7 +49,7 @@ extension ViewController : UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 50
+        return 10
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
