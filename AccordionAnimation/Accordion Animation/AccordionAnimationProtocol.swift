@@ -89,7 +89,7 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
             let removedView = self.expandedIndexPathsData.removeValueForKey(indexPath)!
             
             // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells.
-            if (!tableViewScrollEnabledWhenExpanded && self.expandedIndexPathsData.count == 0) {
+            if (!tableViewScrollEnabledWhenExpanded && self.expandedIndexPathsData.count == 0) || (!multipleCellExpansionEnabled) {
                 tableView.scrollEnabled = true
             }
             
@@ -153,7 +153,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         }
         
         // Block scrolling only if allowTableViewScrollingWhenExpanded is set to false. Else, scrolling will be enabled by default
-        if !tableViewScrollEnabledWhenExpanded {
+        if !(tableViewScrollEnabledWhenExpanded && multipleCellExpansionEnabled) {
             tableView.scrollEnabled = false
         }
         

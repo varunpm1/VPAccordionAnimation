@@ -80,8 +80,8 @@
 		8BD573DA1D254DF500058F49 /* Accordion Animation */ = {
 			isa = PBXGroup;
 			children = (
-				8BD573DB1D254DF500058F49 /* AccordionAnimationProtocol.swift */,
 				8BD573DC1D254DF500058F49 /* AccordionAnimationViewController.swift */,
+				8BD573DB1D254DF500058F49 /* AccordionAnimationProtocol.swift */,
 				8BD573DD1D254DF500058F49 /* AccordionTableViewCell.swift */,
 			);
 			path = "Accordion Animation";
