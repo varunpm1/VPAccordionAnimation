@@ -50,7 +50,7 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
         // If any cell is expanded, then collapse it first
         if expandedIndexPathsData.keys.count > 0 {
             if !allowMultipleCellExpansion {
-                self.hideViewController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: {
+                self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: {
                     // After hiding all other cells, expand the current cell
                     self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
                 })
@@ -63,8 +63,26 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
         self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
     }
     
-    /// Animate the collapsing of view controller with collapsing animation inside a tableView
-    func hideViewController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
+    /// Animate the showing of view with an expanding animation inside a tableView
+    func showView(view : UIView, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
+        // If any cell is expanded, then collapse it first
+        if expandedIndexPathsData.keys.count > 0 {
+            if !allowMultipleCellExpansion {
+                self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: {
+                    // After hiding all other cells, expand the current cell
+                    self.showView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
+                })
+                
+                return
+            }
+        }
+        
+        // If no cell is expanded or multiple expansion is allowed, then simply expand the cell
+        self.showView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
+    }
+    
+    /// Animate the collapsing of view controller or view with collapsing animation inside a tableView
+    func hideViewOrController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If the previous expandedIndexPath and indexPath are same, then collpase the cell.
         if isIndexPathExpanded(indexPath) {
             // Remove all unnecessary data
@@ -107,6 +125,26 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
 private extension AccordianAnimationProtocol where Self : AccordianAnimationViewController {
     //MARK: Private helper functions
     func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
+        // Update the data source for storing the data
+        updateDataSource(viewController.view, tableView: tableView, indexPath: indexPath)
+        
+        // Add the view controller as a child view controller
+        self.addChildViewController(viewController)
+        
+        // Show viewControlller's view with animation
+        animateMovementOfView(viewController.view, tableView: tableView, indexPath: indexPath, callBack: callBack)
+    }
+    
+    /// Animate the expansion of view
+    func showView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
+        // Update the data source for storing the data
+        updateDataSource(view, tableView: tableView, indexPath: indexPath)
+        
+        // Show view with animation
+        animateMovementOfView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
+    }
+    
+    func updateDataSource(view : UIView, tableView : UITableView, indexPath : NSIndexPath) {
         // Since expanding, set the necessary variables
         
         // If indexPath is already present, then do nothing
@@ -120,11 +158,10 @@ private extension AccordianAnimationProtocol where Self : AccordianAnimationView
         }
         
         // Store the view with indexPath expanded
-        self.expandedIndexPathsData[indexPath] = viewController.view
-        
-        // Add the view controller as a child view controller
-        self.addChildViewController(viewController)
-        
+        self.expandedIndexPathsData[indexPath] = view
+    }
+    
+    func animateMovementOfView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // Take the necessary screenshot to make the UI ready for aniamtion
         let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
         
@@ -134,10 +171,10 @@ private extension AccordianAnimationProtocol where Self : AccordianAnimationView
         // Get the new instance of the cell at the expandedIndexPath
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
             // Add the view controller's view as a subview to details view
-            cell.detailsView.addSubview(viewController.view)
+            cell.detailsView.addSubview(view)
             
             // Add necessary constraints
-            addFourSidedConstraintForView(viewController.view, withSuperView: cell.detailsView)
+            addFourSidedConstraintForView(view, withSuperView: cell.detailsView)
             
             // Animate the expanding of tableView
             animationBlock()

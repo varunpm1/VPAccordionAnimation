@@ -72,7 +72,7 @@ extension ViewController : UITableViewDataSource {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if isIndexPathExpanded(indexPath) {
-            self.hideViewController(inTableView: tableView, forIndexPath: indexPath, callBack: nil)
+            self.hideViewOrController(inTableView: tableView, forIndexPath: indexPath, callBack: nil)
         }
         else {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
