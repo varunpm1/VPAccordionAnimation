@@ -11,14 +11,17 @@ import UIKit
 typealias AccordianAnimationCompletionBlock = (() -> ())
 
 protocol AccordianAnimationProtocol : class {
-    /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing
-    var expandedIndexPaths : [NSIndexPath] {get set}
+    /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each key will be expanded index path and value will be the expanded view. Used when scrolling is enabled.
+    var expandedIndexPathsData : [NSIndexPath : UIView] {get set}
     
     /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
     var animationDuration : NSTimeInterval {get set}
     
-    /// Bool variable that is used to allow/disallow the expansion of multiple cells at a time. Defaults to false
+    /// Bool variable that is used to allow or disallow the expansion of multiple cells at a time. Defaults to false
     var allowMultipleCellExpansion : Bool {get set}
+    
+    /// Bool variable that allow or disallow tableView scrolling when expanded. Defaults to false
+    var allowTableViewScrollingWhenExpanded : Bool {get set}
 }
 
 extension AccordianAnimationProtocol where Self : AccordianAnimationViewController {
@@ -26,9 +29,9 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
     /// Animate the showing of view controller with an expanding animation inside a tableView
     func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If any cell is expanded, then collapse it first
-        if expandedIndexPaths.count > 0 {
+        if expandedIndexPathsData.keys.count > 0 {
             if !allowMultipleCellExpansion {
-                self.hideViewController(inTableView: tableView, forIndexPath: expandedIndexPaths.first!, callBack: {
+                self.hideViewController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: {
                     // After hiding all other cells, expand the current cell
                     self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
                 })
@@ -44,15 +47,19 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
     /// Animate the collapsing of view controller with collapsing animation inside a tableView
     func hideViewController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If the previous expandedIndexPath and indexPath are same, then collpase the cell.
-        if expandedIndexPaths.contains(indexPath) {
+        if isIndexPathExpanded(indexPath) {
             // Remove all unnecessary data
-            let removedIndexPath = self.expandedIndexPaths.removeAtIndex(self.expandedIndexPaths.indexOf(indexPath)!)
-            tableView.scrollEnabled = true
+            self.expandedIndexPathsData.removeValueForKey(indexPath)!
+            
+            // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells
+            if !allowTableViewScrollingWhenExpanded && self.expandedIndexPathsData.count == 0 {
+                tableView.scrollEnabled = true
+            }
             
             // Take the necessary screenshot to make the UI ready for aniamtion
-            let animationBlock = createScreenshotUI(tableView, indexPath: removedIndexPath, callBack: callBack)
+            let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
             
-            if let cell = tableView.cellForRowAtIndexPath(removedIndexPath) as? AccordianTableViewCell {
+            if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
                 // Remove the view that was added as a subView
                 for subview in cell.detailsView.subviews {
                     subview.removeFromSuperview()
@@ -62,7 +69,7 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
                 self.childViewControllers.last!.removeFromParentViewController()
                 
                 // Reload the tableView content
-                tableView.reloadRowsAtIndexPaths([removedIndexPath], withRowAnimation: .None)
+                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                 
                 // Animate the collapsing of tableView
                 animationBlock()
@@ -71,18 +78,23 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
     }
 }
 
-private extension AccordianAnimationProtocol where Self : UIViewController {
+private extension AccordianAnimationProtocol where Self : AccordianAnimationViewController {
     //MARK: Private helper functions
     func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // Since expanding, set the necessary variables
         
         // If indexPath is already present, then do nothing
-        if self.expandedIndexPaths.contains(indexPath) {
+        if isIndexPathExpanded(indexPath) {
             return
         }
         
-        self.expandedIndexPaths.append(indexPath)
-        tableView.scrollEnabled = false
+        // Allow scrolling only if allowTableViewScrollingWhenExpanded is set to false. Else, scrolling will be enabled by default
+        if !allowTableViewScrollingWhenExpanded {
+            tableView.scrollEnabled = false
+        }
+        
+        // Store the view with indexPath expanded
+        self.expandedIndexPathsData[indexPath] = viewController.view
         
         // Add the view controller as a child view controller
         self.addChildViewController(viewController)
@@ -141,17 +153,6 @@ private extension AccordianAnimationProtocol where Self : UIViewController {
         }
         
         return image
-    }
-    
-    /// Helper method for addding four sided constraints for necessary view w.r.t to super view
-    func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
-        view.translatesAutoresizingMaskIntoConstraints = false
-        let leadingConstraint = NSLayoutConstraint(item: view, attribute: .Leading, relatedBy: .Equal, toItem: superView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
-        let trailingConstraint = NSLayoutConstraint(item: view, attribute: .Trailing, relatedBy: .Equal, toItem: superView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
-        let topConstraint = NSLayoutConstraint(item: view, attribute: .Top, relatedBy: .Equal, toItem: superView, attribute: .Top, multiplier: 1.0, constant: 0.0)
-        let bottomConstraint = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: superView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-        
-        superView.addConstraints([leadingConstraint, trailingConstraint, topConstraint, bottomConstraint])
     }
     
     /// Take the necessary screenshot to make the UI ready for aniamtion

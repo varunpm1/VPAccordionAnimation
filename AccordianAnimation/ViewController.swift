@@ -42,7 +42,7 @@ extension ViewController : UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if expandedIndexPaths.contains(indexPath) {
+        if isIndexPathExpanded(indexPath) {
             return 340
         }
         else {
@@ -53,7 +53,7 @@ extension ViewController : UITableViewDataSource {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        if expandedIndexPaths.contains(indexPath) {
+        if isIndexPathExpanded(indexPath) {
             self.hideViewController(inTableView: tableView, forIndexPath: indexPath, callBack: nil)
         }
         else {
