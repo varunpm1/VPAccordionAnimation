@@ -24,10 +24,10 @@ protocol AccordianAnimationProtocol : class {
     var animationDuration : NSTimeInterval {get set}
     
     /// Bool variable that is used to allow or disallow the expansion of multiple cells at a time. This variable will always be set to true if `cellDefaultState` is set to `ExpandedAll`. Defaults to false
-    var allowMultipleCellExpansion : Bool {get set}
+    var multipleCellExpansionEnabled : Bool {get set}
     
     /// Bool variable that allow or disallow tableView scrolling when expanded. If allowMultipleCellExpansion is set to false, then this will be set to false. Defaults to false.
-    var allowTableViewScrollingWhenExpanded : Bool {get set}
+    var tableViewScrollEnabledWhenExpanded : Bool {get set}
     
     /// Enum value that specifies the state of all the cells. All the cells can be expanded or collapsed. Defaults to CollapsedAll
     var cellDefaultState : DefaultState {get set}
@@ -49,7 +49,7 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
     func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If any cell is expanded, then collapse it first
         if expandedIndexPathsData.keys.count > 0 {
-            if !allowMultipleCellExpansion {
+            if !multipleCellExpansionEnabled {
                 self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: {
                     // After hiding all other cells, expand the current cell
                     self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
@@ -67,7 +67,7 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
     func showView(view : UIView, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordianAnimationCompletionBlock?) {
         // If any cell is expanded, then collapse it first
         if expandedIndexPathsData.keys.count > 0 {
-            if !allowMultipleCellExpansion {
+            if !multipleCellExpansionEnabled {
                 self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: {
                     // After hiding all other cells, expand the current cell
                     self.showView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
@@ -88,8 +88,8 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
             // Remove all unnecessary data
             let removedView = self.expandedIndexPathsData.removeValueForKey(indexPath)!
             
-            // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells. If allowMultipleCellExpansion is false, then scrolling will be disabled
-            if (!allowTableViewScrollingWhenExpanded && self.expandedIndexPathsData.count == 0) || (!allowMultipleCellExpansion) {
+            // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells.
+            if (!tableViewScrollEnabledWhenExpanded && self.expandedIndexPathsData.count == 0) {
                 tableView.scrollEnabled = true
             }
             
@@ -152,8 +152,8 @@ private extension AccordianAnimationProtocol where Self : AccordianAnimationView
             return
         }
         
-        // Allow scrolling only if allowTableViewScrollingWhenExpanded is set to false or if allowMultipleCellExpansion is false. Else, scrolling will be enabled by default
-        if !(allowTableViewScrollingWhenExpanded && allowMultipleCellExpansion) {
+        // Block scrolling only if allowTableViewScrollingWhenExpanded is set to false. Else, scrolling will be enabled by default
+        if !tableViewScrollEnabledWhenExpanded {
             tableView.scrollEnabled = false
         }
         

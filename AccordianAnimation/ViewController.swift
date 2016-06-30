@@ -18,8 +18,6 @@ class ViewController: AccordianAnimationViewController {
         // Do any additional setup after loading the view, typically from a nib.
         tableView.tableFooterView = UIView()
         edgesForExtendedLayout = .None
-        
-        cellDefaultState = DefaultState.ExpandedAll
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,7 +30,7 @@ class ViewController: AccordianAnimationViewController {
     }
     
     override func getNumberOfRowsInTableViewForSection(section : Int) -> Int {
-        return 10
+        return 50
     }
     
     override func createViewControllerForIndexPath(indexPath: NSIndexPath) -> UIViewController? {
@@ -49,7 +47,7 @@ extension ViewController : UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return 50
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
