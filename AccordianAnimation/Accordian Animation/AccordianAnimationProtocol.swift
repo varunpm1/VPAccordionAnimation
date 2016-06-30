@@ -20,7 +20,7 @@ protocol AccordianAnimationProtocol : class {
     /// Bool variable that is used to allow or disallow the expansion of multiple cells at a time. Defaults to false
     var allowMultipleCellExpansion : Bool {get set}
     
-    /// Bool variable that allow or disallow tableView scrolling when expanded. Defaults to false
+    /// Bool variable that allow or disallow tableView scrolling when expanded. If allowMultipleCellExpansion is set to false, then this will be set to false. Defaults to false.
     var allowTableViewScrollingWhenExpanded : Bool {get set}
 }
 
@@ -51,18 +51,20 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
             // Remove all unnecessary data
             self.expandedIndexPathsData.removeValueForKey(indexPath)!
             
-            // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells
-            if !allowTableViewScrollingWhenExpanded && self.expandedIndexPathsData.count == 0 {
+            // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells. If allowMultipleCellExpansion is false, then scrolling will be disabled
+            if (!allowTableViewScrollingWhenExpanded && self.expandedIndexPathsData.count == 0) || (!allowMultipleCellExpansion) {
                 tableView.scrollEnabled = true
             }
             
             // Take the necessary screenshot to make the UI ready for aniamtion
-            let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
-            
-            if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
-                // Remove the view that was added as a subView
-                for subview in cell.detailsView.subviews {
-                    subview.removeFromSuperview()
+            if tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
+                let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
+                
+                if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordianTableViewCell {
+                    // Remove the view that was added as a subView
+                    for subview in cell.detailsView.subviews {
+                        subview.removeFromSuperview()
+                    }
                 }
                 
                 // Remove the view controller that was added as a child view controller
@@ -73,6 +75,17 @@ extension AccordianAnimationProtocol where Self : AccordianAnimationViewControll
                 
                 // Animate the collapsing of tableView
                 animationBlock()
+            }
+            else {
+                // Remove the view controller that was added as a child view controller
+                self.childViewControllers.last!.removeFromParentViewController()
+                
+                // Reload the tableView content
+                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                
+                if let callBack = callBack {
+                    callBack()
+                }
             }
         }
     }
@@ -88,8 +101,8 @@ private extension AccordianAnimationProtocol where Self : AccordianAnimationView
             return
         }
         
-        // Allow scrolling only if allowTableViewScrollingWhenExpanded is set to false. Else, scrolling will be enabled by default
-        if !allowTableViewScrollingWhenExpanded {
+        // Allow scrolling only if allowTableViewScrollingWhenExpanded is set to false or if allowMultipleCellExpansion is false. Else, scrolling will be enabled by default
+        if !(allowTableViewScrollingWhenExpanded && allowMultipleCellExpansion) {
             tableView.scrollEnabled = false
         }
         

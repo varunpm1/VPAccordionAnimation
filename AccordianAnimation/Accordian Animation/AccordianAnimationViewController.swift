@@ -20,7 +20,7 @@ class AccordianAnimationViewController: UIViewController, AccordianAnimationProt
     var allowMultipleCellExpansion: Bool = false
     
     // Default value for disabling scrolling when expanded
-    var allowTableViewScrollingWhenExpanded: Bool = true
+    var allowTableViewScrollingWhenExpanded: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
