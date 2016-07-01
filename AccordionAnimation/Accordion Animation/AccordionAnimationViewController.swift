@@ -103,6 +103,10 @@ extension AccordionAnimationViewController : AccordionAnimationProtocol {
     func createViewControllerForIndexPath(indexPath: NSIndexPath) -> UIViewController? {
         return nil
     }
+    
+    func createViewForIndexPath(indexPath: NSIndexPath) -> UIView? {
+        return nil
+    }
 }
 
 extension AccordionAnimationViewController : UITableViewDelegate {

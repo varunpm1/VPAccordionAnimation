@@ -44,6 +44,9 @@ protocol AccordionAnimationProtocol : class {
     
     /// Protocol function to create the view controller for the first time - Used only during ExpandedAll state
     func createViewControllerForIndexPath(indexPath : NSIndexPath) -> UIViewController?
+    
+    /// Protocol function to create the view for the first time - Used only during ExpandedAll state
+    func createViewForIndexPath(indexPath : NSIndexPath) -> UIView?
 }
 
 extension AccordionAnimationProtocol where Self : AccordionAnimationViewController {
