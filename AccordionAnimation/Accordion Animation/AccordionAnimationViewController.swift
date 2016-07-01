@@ -29,6 +29,9 @@ class AccordionAnimationViewController: UIViewController {
     // Default value for disabling scrolling when expanded
     var tableViewScrollEnabledWhenExpanded: Bool = false
     
+    // Default value for enabling selection for expanding or collapsing
+    var allowTableViewSelection: Bool = true
+    
     // Default value for collapsed state by deafult
     var cellDefaultState: DefaultState = DefaultState.CollapsedAll {
         didSet {

@@ -23,14 +23,17 @@ protocol AccordionAnimationProtocol : class {
     /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
     var animationDuration : NSTimeInterval {get set}
     
+    /// Enum value that specifies the state of all the cells. All the cells can be expanded or collapsed. Defaults to CollapsedAll
+    var cellDefaultState : DefaultState {get set}
+    
     /// Bool variable that is used to allow or disallow the expansion of multiple cells at a time. This variable will always be set to true if `cellDefaultState` is set to `ExpandedAll`. Defaults to false
     var multipleCellExpansionEnabled : Bool {get set}
     
     /// Bool variable that allow or disallow tableView scrolling when expanded. If allowMultipleCellExpansion is set to false, then this will be set to false. Defaults to false.
     var tableViewScrollEnabledWhenExpanded : Bool {get set}
     
-    /// Enum value that specifies the state of all the cells. All the cells can be expanded or collapsed. Defaults to CollapsedAll
-    var cellDefaultState : DefaultState {get set}
+    /// Bool variable that determines whether expansion/collapsing should be done. If set, then expanding or collapsing is done. Else does nothing. Defaults to true
+    var allowTableViewSelection : Bool {get set}
     
     //MARK: Protocol Functions
     /// Protocol function to retreive the number of sections in current tableView - Used only during ExpandedAll state
@@ -47,6 +50,11 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
     //MARK: Public functions
     /// Animate the showing of view controller with an expanding animation inside a tableView
     func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+        // If allowTableViewSelection is set to false, then do nothing
+        if !allowTableViewSelection {
+            return
+        }
+        
         // If any cell is expanded, then collapse it first
         if expandedIndexPathsData.keys.count > 0 {
             if !multipleCellExpansionEnabled {
@@ -65,6 +73,11 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
     
     /// Animate the showing of view with an expanding animation inside a tableView
     func showView(view : UIView, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+        // If allowTableViewSelection is set to false, then do nothing
+        if !allowTableViewSelection {
+            return
+        }
+        
         // If any cell is expanded, then collapse it first
         if expandedIndexPathsData.keys.count > 0 {
             if !multipleCellExpansionEnabled {
@@ -83,6 +96,11 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
     
     /// Animate the collapsing of view controller or view with collapsing animation inside a tableView
     func hideViewOrController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+        // If allowTableViewSelection is set to false, then do nothing
+        if !allowTableViewSelection {
+            return
+        }
+        
         // If the previous expandedIndexPath and indexPath are same, then collpase the cell.
         if isIndexPathExpanded(indexPath) {
             // Remove all unnecessary data
