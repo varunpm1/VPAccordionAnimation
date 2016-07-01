@@ -61,9 +61,13 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
         // If any cell is expanded, then collapse it first
         if expandedIndexPathsData.keys.count > 0 {
             if !multipleCellExpansionEnabled {
-                self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: {
+                self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: { [weak self] in
+                    if self == nil {
+                        return
+                    }
+                    
                     // After hiding all other cells, expand the current cell
-                    self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
+                    self!.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
                 })
                 
                 return
@@ -84,9 +88,13 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
         // If any cell is expanded, then collapse it first
         if expandedIndexPathsData.keys.count > 0 {
             if !multipleCellExpansionEnabled {
-                self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: {
+                self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: { [weak self] in
+                    if self == nil {
+                        return
+                    }
+                    
                     // After hiding all other cells, expand the current cell
-                    self.showView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
+                    self!.showView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
                 })
                 
                 return
@@ -110,11 +118,10 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
             let removedView = self.expandedIndexPathsData.removeValueForKey(indexPath)!
             
             // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells.
-            if (!tableViewScrollEnabledWhenExpanded && self.expandedIndexPathsData.count == 0) || (!multipleCellExpansionEnabled) {
+            if (!tableViewScrollEnabledWhenExpanded && self.expandedIndexPathsData.count == 0) {
                 tableView.scrollEnabled = true
             }
             
-            //FIXME: Handle collapsing when the allowTableViewScrollingWhenExpanded is set true but allowsMultipleCellExpansion is set to false.
             // Take the necessary screenshot to make the UI ready for aniamtion
             if tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
                 let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
@@ -133,11 +140,18 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
                 self.removeControllerForView(removedView)
                 
                 // Reload the tableView content
-                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                let offset = tableView.contentOffset.y
+                tableView.reloadData()
                 
-                if let callBack = callBack {
-                    callBack()
-                }
+                // Restore proper content offset. +1 since cell's contentView and (infoView + detailsView) has a difference of 1 pixel
+                tableView.contentOffset.y = max(0, offset - removedView.bounds.size.height + 1)
+                
+                // Allow for loading of cells' data. Call in main queue to load all data before showing another animation if needed. Else arrow rotation issue is found
+                dispatch_async(dispatch_get_main_queue(), {
+                    if let callBack = callBack {
+                        callBack()
+                    }
+                })
             }
         }
     }
@@ -174,7 +188,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         }
         
         // Block scrolling only if allowTableViewScrollingWhenExpanded is set to false. Else, scrolling will be enabled by default
-        if !(tableViewScrollEnabledWhenExpanded && multipleCellExpansionEnabled) {
+        if !tableViewScrollEnabledWhenExpanded {
             tableView.scrollEnabled = false
         }
         
@@ -235,6 +249,9 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         // Move the frame for the screenshot starting position
         CGContextTranslateCTM(UIGraphicsGetCurrentContext(), rect.origin.x, -rect.origin.y);
         
+        // Set the new size for the view
+        aView.frame.size = rect.size
+        
         // Set the new contentOffset for the view only if it's a scrollView
         if let aView = aView as? UIScrollView {
             aView.contentOffset.y = rect.origin.y
@@ -262,9 +279,9 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         let rect = tableView.rectForRowAtIndexPath(indexPath)
         let offset = tableView.contentOffset.y
         
-        // A full table height is added for safety purpose. An extra height is added for scrolling purpose. i.e., if bottom image is scrolled upwards, then empty image will be seen and vice-versa. To avoid this, rendering remaining bottom/top view so that image will not be empty
-        let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
-        let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height)
+        // A full table height + current cell height is added for safety purpose. An extra height is added for scrolling purpose. i.e., if bottom image is scrolled upwards, then empty image will be seen and vice-versa. To avoid this, rendering remaining bottom/top view so that image will not be empty
+        let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMinY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height + rect.size.height)
+        let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height + rect.size.height)
         
         // Get the instance of arrowView if animation needed for rotating the arrow
         var arrowView : UIView?
@@ -325,41 +342,52 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
             }
             
             // Animate the expansion/collapsing of table cells
-            if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
-                UIView.animateWithDuration(self!.animationDuration, animations: {
-                    // Animate the rotation of the arrow view if outlet is set
-                    if let arrowView = arrowView {
+            UIView.animateWithDuration(self!.animationDuration, animations: {
+                // Animate the rotation of the arrow view if outlet is set
+                if let arrowView = arrowView {
+                    if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
                         arrowView.transform = CGAffineTransformRotate(arrowView.transform, (isExpanding ? 1 : -1) * self!.getRotationAngleForArrowForCell(cell))
                     }
-                    
-                    // Scroll the tableView to middle if needed
+                }
+                
+                // Scroll the tableView to middle if needed
+                if isExpanding {
                     tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
-                    
-                    // Get the new frame for the selected indexPath
-                    let rect = tableView.rectForRowAtIndexPath(indexPath)
-                    
-                    // Calculate the frame change of tableView
-                    let offsetChange = offset - tableView.contentOffset.y
-                    
-                    // Set the topImageView and bottomImageView frame
-                    topImageView.frame.origin.y += offsetChange
-                    bottomImageView.frame.origin.y = CGRectGetMaxY(rect) - tableView.contentOffset.y
-                    
-                    }, completion: { (isSuccess) in
+                }
+                else {
+                    tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: false)
+                }
+                
+                // Get the new frame for the selected indexPath
+                let rect = tableView.rectForRowAtIndexPath(indexPath)
+                
+                // Calculate the frame change of tableView
+                let offsetChange = offset - tableView.contentOffset.y
+                
+                // Set the topImageView and bottomImageView frame
+                topImageView.frame.origin.y += offsetChange
+                bottomImageView.frame.origin.y = CGRectGetMaxY(rect) - tableView.contentOffset.y
+                
+                }, completion: { (isSuccess) in
+                    if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
                         cell.arrowView?.hidden = false
-                        arrowView = nil
-                        
-                        // On completion, remove the imageViews
-                        topImageView.removeFromSuperview()
-                        bottomImageView.removeFromSuperview()
-                        containerView.removeFromSuperview()
-                        
-                        // On successful animation, call callBack to indicate the animation completion
+                    }
+                    
+                    arrowView = nil
+                    
+                    // On completion, remove the imageViews
+                    topImageView.removeFromSuperview()
+                    bottomImageView.removeFromSuperview()
+                    containerView.removeFromSuperview()
+                    
+                    // On successful animation, call callBack to indicate the animation completion
+                    // Use dispatch_async to reload the cells and then execute further processing. Issue with arrow when show is called immediately after hide
+                    dispatch_async(dispatch_get_main_queue(), {
                         if let callBack = callBack {
                             callBack()
                         }
-                })
-            }
+                    })
+            })
         }
         
         return callBack
