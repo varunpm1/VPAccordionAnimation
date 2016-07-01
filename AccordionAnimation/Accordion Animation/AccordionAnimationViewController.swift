@@ -110,7 +110,7 @@ extension AccordionAnimationViewController : AccordionAnimationProtocol {
     }
 }
 
-extension AccordionAnimationViewController : UITableViewDelegate {
+extension AccordionAnimationViewController {
     /// This method reinitializes arrow image position if needed. If arrow animation is needed and subclasses want this delegate method to be implemented, then subclasses has to call this method using super. Else animation won't work as needed
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         // If the expandedIndexPath is the same as the cell's indexPath, then set the arrow image (if present) to final state, else in initial state
