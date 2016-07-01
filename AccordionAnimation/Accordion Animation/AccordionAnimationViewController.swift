@@ -61,11 +61,12 @@ class AccordionAnimationViewController: UIViewController {
             for rowIndex in 0.stride(to: rows, by: 1) {
                 let indexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
                 
-                let viewController = createViewControllerForIndexPath(indexPath)
-                
-                if let viewController = viewController {
+                if let viewController = createViewControllerForIndexPath(indexPath) {
                     expandedIndexPathsData[indexPath] = viewController.view
                     addChildViewController(viewController)
+                }
+                else if let view = createViewForIndexPath(indexPath) {
+                    expandedIndexPathsData[indexPath] = view
                 }
             }
         }
