@@ -53,7 +53,26 @@ class AccordionAnimationViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func populateExpandedIndexPathsData() {
+    //MARK: Public Helper functions
+    /// Helper method for addding four sided constraints for necessary view w.r.t to super view
+    func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let leadingConstraint = NSLayoutConstraint(item: view, attribute: .Leading, relatedBy: .Equal, toItem: superView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
+        let trailingConstraint = NSLayoutConstraint(item: view, attribute: .Trailing, relatedBy: .Equal, toItem: superView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
+        let topConstraint = NSLayoutConstraint(item: view, attribute: .Top, relatedBy: .Equal, toItem: superView, attribute: .Top, multiplier: 1.0, constant: 0.0)
+        let bottomConstraint = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: superView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+        
+        superView.addConstraints([leadingConstraint, trailingConstraint, topConstraint, bottomConstraint])
+    }
+    
+    /// Helper method to check if indexPath is already expanded or not
+    func isIndexPathExpanded(indexPath : NSIndexPath) -> Bool {
+        return expandedIndexPathsData.keys.contains(indexPath)
+    }
+    
+    //MARK: Private Helper functions
+    // Populate the expanded indexPaths data
+    private func populateExpandedIndexPathsData() {
         let sections = self.getNumberOfSectionsInTableView()
         for sectionIndex in 0.stride(to: sections, by: 1) {
             let rows = self.getNumberOfRowsInTableViewForSection(sectionIndex)
@@ -70,24 +89,6 @@ class AccordionAnimationViewController: UIViewController {
                 }
             }
         }
-    }
-    
-    
-    
-    /// Helper method for addding four sided constraints for necessary view w.r.t to super view
-    func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
-        view.translatesAutoresizingMaskIntoConstraints = false
-        let leadingConstraint = NSLayoutConstraint(item: view, attribute: .Leading, relatedBy: .Equal, toItem: superView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
-        let trailingConstraint = NSLayoutConstraint(item: view, attribute: .Trailing, relatedBy: .Equal, toItem: superView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
-        let topConstraint = NSLayoutConstraint(item: view, attribute: .Top, relatedBy: .Equal, toItem: superView, attribute: .Top, multiplier: 1.0, constant: 0.0)
-        let bottomConstraint = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: superView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-        
-        superView.addConstraints([leadingConstraint, trailingConstraint, topConstraint, bottomConstraint])
-    }
-    
-    /// Helper method to check if indexPath is already expanded or not
-    func isIndexPathExpanded(indexPath : NSIndexPath) -> Bool {
-        return expandedIndexPathsData.keys.contains(indexPath)
     }
 }
 
