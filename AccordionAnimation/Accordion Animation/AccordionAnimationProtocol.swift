@@ -281,7 +281,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         
         // A full table height + current cell height is added for safety purpose. An extra height is added for scrolling purpose. i.e., if bottom image is scrolled upwards, then empty image will be seen and vice-versa. To avoid this, rendering remaining bottom/top view so that image will not be empty
         let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMinY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height + rect.size.height)
-        let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height + rect.size.height)
+        let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height)
         
         // Get the instance of arrowView if animation needed for rotating the arrow
         var arrowView : UIView?
