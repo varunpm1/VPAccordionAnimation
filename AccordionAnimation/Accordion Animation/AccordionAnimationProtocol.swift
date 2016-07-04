@@ -20,8 +20,11 @@ protocol AccordionAnimationProtocol : class {
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each key will be expanded index path and value will be the expanded view. Used when scrolling is enabled.
     var expandedIndexPathsData : [NSIndexPath : UIView] {get set}
     
-    /// Defines the animation duration to be used for expanding or collapsing. Defaults to 0.4
-    var animationDuration : NSTimeInterval {get set}
+    /// Defines the animation duration to be used for expanding. Defaults to 0.4
+    var closeAnimationDuration : NSTimeInterval {get set}
+    
+    /// Defines the animation duration to be used for collapsing. Defaults to 0.4
+    var openAnimationDuration : NSTimeInterval {get set}
     
     /// Enum value that specifies the state of all the cells. All the cells can be expanded or collapsed. Defaults to CollapsedAll
     var cellDefaultState : DefaultState {get set}
@@ -342,7 +345,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
             }
             
             // Animate the expansion/collapsing of table cells
-            UIView.animateWithDuration(self!.animationDuration, animations: {
+            UIView.animateWithDuration(isExpanding ? self!.openAnimationDuration : self!.closeAnimationDuration, animations: {
                 // Animate the rotation of the arrow view if outlet is set
                 if let arrowView = arrowView {
                     if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {

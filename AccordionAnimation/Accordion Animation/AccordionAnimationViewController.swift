@@ -14,7 +14,8 @@ class AccordionAnimationViewController: UIViewController {
     var expandedIndexPathsData : [NSIndexPath : UIView] = [:]
     
     // Default value for animation
-    var animationDuration: NSTimeInterval = 0.4
+    var closeAnimationDuration: NSTimeInterval = 0.4
+    var openAnimationDuration: NSTimeInterval = 0.4
     
     // Default value for disabling multiple expanding of cells
     var multipleCellExpansionEnabled: Bool = false {
