@@ -45,6 +45,9 @@ class AccordionAnimationViewController: UIViewController {
         }
     }
     
+    // Default value for clockwise rotation while expanding and anticlockwise while collapsing
+    var arrowRotationDirection: ArrowRotation = ArrowRotation.ClockWise
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }

@@ -48,6 +48,7 @@ class AccordionTableViewCell: UITableViewCell {
     
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
     var arrowImageInitialDirection : ArrowDirection = .Right
+    
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
     var arrowImageFinalDirection : ArrowDirection = .Down
     

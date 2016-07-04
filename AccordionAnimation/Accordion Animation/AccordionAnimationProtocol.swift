@@ -15,6 +15,11 @@ enum DefaultState {
     case CollapsedAll
 }
 
+enum ArrowRotation {
+    case ClockWise
+    case AntiClockWise
+}
+
 protocol AccordionAnimationProtocol : class {
     //MARK: Protocol Variables
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each key will be expanded index path and value will be the expanded view. Used when scrolling is enabled.
@@ -37,6 +42,9 @@ protocol AccordionAnimationProtocol : class {
     
     /// Bool variable that determines whether expansion/collapsing should be done. If set, then expanding or collapsing is done. Else does nothing. Defaults to true
     var allowTableViewSelection : Bool {get set}
+    
+    /// Defines the rotation direction for the arrowView if present. Defaults to clockWise direction for expansion and antiClockWise direction for collapsing.
+    var arrowRotationDirection : ArrowRotation {get set}
     
     //MARK: Protocol Functions
     /// Protocol function to retreive the number of sections in current tableView - Used only during ExpandedAll state
@@ -344,15 +352,15 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
                 return
             }
             
+            // Animate the rotation of the arrow view if outlet is set
+            if let arrowView = arrowView {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
+                    self!.rotateArrowViewForCell(cell, arrowView: arrowView, isExpanding: isExpanding)
+                }
+            }
+            
             // Animate the expansion/collapsing of table cells
             UIView.animateWithDuration(isExpanding ? self!.openAnimationDuration : self!.closeAnimationDuration, animations: {
-                // Animate the rotation of the arrow view if outlet is set
-                if let arrowView = arrowView {
-                    if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
-                        arrowView.transform = CGAffineTransformRotate(arrowView.transform, (isExpanding ? 1 : -1) * self!.getRotationAngleForArrowForCell(cell))
-                    }
-                }
-                
                 // Scroll the tableView to middle if needed
                 if isExpanding {
                     tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
@@ -376,6 +384,8 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
                         cell.arrowView?.hidden = false
                     }
                     
+                    // Remove all animations after completion
+                    arrowView?.layer.removeAllAnimations()
                     arrowView = nil
                     
                     // On completion, remove the imageViews
@@ -396,6 +406,19 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         return callBack
     }
     
+    // Helper function for animating the rotation of arrowView
+    func rotateArrowViewForCell(cell : AccordionTableViewCell, arrowView : UIView, isExpanding : Bool) {
+        let rotateArrowAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        rotateArrowAnimation.duration = isExpanding ? openAnimationDuration : closeAnimationDuration
+        rotateArrowAnimation.values = [0, getRotationAngleForArrowForCell(cell, isExpanding: isExpanding)]
+        rotateArrowAnimation.keyTimes = [0, 1]
+        rotateArrowAnimation.timingFunctions = [CAMediaTimingFunction.init(name: kCAMediaTimingFunctionLinear)]
+        rotateArrowAnimation.fillMode = kCAFillModeForwards
+        rotateArrowAnimation.removedOnCompletion = false
+        
+        arrowView.layer.addAnimation(rotateArrowAnimation, forKey: "rotateAnimation")
+    }
+    
     // Helper function to retreive the screenshot inside a imageView
     func addScreenshotView(tableView : UITableView, forFrame screenshotRect : CGRect) -> UIImageView {
         let screenshotImage = self.getScreenShot(tableView, forRect: screenshotRect)
@@ -409,9 +432,19 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
     }
     
     // Helper function for calcaulation the angle needed to rotate the arrow view
-    func getRotationAngleForArrowForCell(cell : AccordionTableViewCell) -> CGFloat {
-        let rotationConstant = cell.arrowImageFinalDirection.rawValue - cell.arrowImageInitialDirection.rawValue
+    func getRotationAngleForArrowForCell(cell : AccordionTableViewCell, isExpanding : Bool) -> CGFloat {
+        // Here 4 is the total number of directions available
+        var rotationConstant = 0
+        
+        if (arrowRotationDirection == ArrowRotation.ClockWise) {
+            rotationConstant = (4 + cell.arrowImageFinalDirection.rawValue - cell.arrowImageInitialDirection.rawValue) % 4
+        }
+        else {
+            rotationConstant = (cell.arrowImageFinalDirection.rawValue - cell.arrowImageInitialDirection.rawValue - 4) % 4
+        }
+        
         let midPiValue = 3.141593 / 2
+        rotationConstant = rotationConstant * (isExpanding ? 1 : -1)
         
         return CGFloat(Double(rotationConstant) * midPiValue)
     }
