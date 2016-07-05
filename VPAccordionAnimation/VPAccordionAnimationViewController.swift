@@ -1,14 +1,36 @@
 //
-//  AccordionAnimationViewController.swift
-//  AccordionAnimation
+//  VPAccordionAnimationViewController.swift
+//  VPAccordionAnimation
 //
 //  Created by Varun on 28/06/16.
 //  Copyright © 2016 VPM. All rights reserved.
 //
 
+//  The MIT License (MIT)
+//
+//  Copyright (c) 2016 Varun P M
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
+
 import UIKit
 
-class AccordionAnimationViewController: UIViewController {
+class VPAccordionAnimationViewController: UIViewController {
     
     // Expanded indexPath for storing the selected cell
     var expandedIndexPathsData : [NSIndexPath : UIView] = [:]
@@ -100,7 +122,7 @@ class AccordionAnimationViewController: UIViewController {
 }
 
 /// Implement the protocol methods in extension. Else the override in subclass won't work.
-extension AccordionAnimationViewController : AccordionAnimationProtocol {
+extension VPAccordionAnimationViewController : VPAccordionAnimationProtocol {
     func getNumberOfSectionsInTableView() -> Int {
         return 0
     }
@@ -118,11 +140,11 @@ extension AccordionAnimationViewController : AccordionAnimationProtocol {
     }
 }
 
-extension AccordionAnimationViewController {
+extension VPAccordionAnimationViewController {
     /// This method reinitializes arrow image position if needed. If arrow animation is needed and subclasses want this delegate method to be implemented, then subclasses has to call this method using super. Else animation won't work as needed
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         // If the expandedIndexPath is the same as the cell's indexPath, then set the arrow image (if present) to final state, else in initial state
-        if let cell = cell as? AccordionTableViewCell {
+        if let cell = cell as? VPAccordionTableViewCell {
             if isIndexPathExpanded(indexPath) {
                 // Set required direction for the selected indexPath
                 cell.updateImageForViewWithCurrentDirection(cell.arrowImageFinalDirection)

@@ -25,7 +25,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="AccordionAnimation" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="VPAccordionAnimationExample" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -38,7 +38,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="tableCellId" id="kV3-Ed-ODs" customClass="CustomTableViewCell" customModule="AccordionAnimation" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="tableCellId" id="kV3-Ed-ODs" customClass="CustomTableViewCell" customModule="VPAccordionAnimationExample" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="600" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kV3-Ed-ODs" id="Q1f-eK-z3Q">
@@ -113,7 +113,7 @@
         <!--Sample View Controller-->
         <scene sceneID="nJa-y1-Meh">
             <objects>
-                <viewController storyboardIdentifier="sampleVCId" id="0S7-XJ-SQL" customClass="SampleViewController" customModule="AccordionAnimation" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="sampleVCId" id="0S7-XJ-SQL" customClass="SampleViewController" customModule="VPAccordionAnimationExample" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Gg3-wo-qF8"/>
                         <viewControllerLayoutGuide type="bottom" id="RNd-yL-cyK"/>

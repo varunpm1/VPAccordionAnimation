@@ -1,6 +1,6 @@
 //
 //  CustomTableViewCell.swift
-//  AccordionAnimation
+//  VPAccordionAnimationExample
 //
 //  Created by Varun on 23/06/16.
 //  Copyright © 2016 VPM. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CustomTableViewCell: AccordionTableViewCell {
+class CustomTableViewCell: VPAccordionTableViewCell {
 
     @IBOutlet weak var displayLabel: UILabel!
     

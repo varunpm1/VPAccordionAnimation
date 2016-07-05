@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
                BuildableName = "AccordionAnimation.app"
-               BlueprintName = "AccordionAnimation"
-               ReferencedContainer = "container:AccordionAnimation.xcodeproj">
+               BlueprintName = "VPAccordionAnimationExample"
+               ReferencedContainer = "container:VPAccordionAnimationExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,8 +34,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
             BuildableName = "AccordionAnimation.app"
-            BlueprintName = "AccordionAnimation"
-            ReferencedContainer = "container:AccordionAnimation.xcodeproj">
+            BlueprintName = "VPAccordionAnimationExample"
+            ReferencedContainer = "container:VPAccordionAnimationExample.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -57,8 +57,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
             BuildableName = "AccordionAnimation.app"
-            BlueprintName = "AccordionAnimation"
-            ReferencedContainer = "container:AccordionAnimation.xcodeproj">
+            BlueprintName = "VPAccordionAnimationExample"
+            ReferencedContainer = "container:VPAccordionAnimationExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -76,8 +76,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
             BuildableName = "AccordionAnimation.app"
-            BlueprintName = "AccordionAnimation"
-            ReferencedContainer = "container:AccordionAnimation.xcodeproj">
+            BlueprintName = "VPAccordionAnimationExample"
+            ReferencedContainer = "container:VPAccordionAnimationExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

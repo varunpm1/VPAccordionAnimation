@@ -1,14 +1,36 @@
 //
-//  AccordionAnimationProtocol.swift
-//  AccordionAnimation
+//  VPAccordionAnimationProtocol.swift
+//  VPAccordionAnimation
 //
 //  Created by Varun on 23/06/16.
 //  Copyright © 2016 VPM. All rights reserved.
 //
 
+//  The MIT License (MIT)
+//
+//  Copyright (c) 2016 Varun P M
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
+
 import UIKit
 
-typealias AccordionAnimationCompletionBlock = (() -> ())
+typealias VPAccordionAnimationCompletionBlock = (() -> ())
 
 enum DefaultState {
     case ExpandedAll
@@ -20,7 +42,7 @@ enum ArrowRotation {
     case AntiClockWise
 }
 
-protocol AccordionAnimationProtocol : class {
+protocol VPAccordionAnimationProtocol : class {
     //MARK: Protocol Variables
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each key will be expanded index path and value will be the expanded view. Used when scrolling is enabled.
     var expandedIndexPathsData : [NSIndexPath : UIView] {get set}
@@ -63,10 +85,10 @@ protocol AccordionAnimationProtocol : class {
     func createViewForIndexPath(indexPath : NSIndexPath) -> UIView?
 }
 
-extension AccordionAnimationProtocol where Self : AccordionAnimationViewController {
+extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewController {
     //MARK: Public functions
     /// Animate the showing of view controller with an expanding animation inside a tableView
-    func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+    func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // If allowTableViewSelection is set to false, then do nothing
         if !allowTableViewSelection {
             return
@@ -93,7 +115,7 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
     }
     
     /// Animate the showing of view with an expanding animation inside a tableView
-    func showView(view : UIView, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+    func showView(view : UIView, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // If allowTableViewSelection is set to false, then do nothing
         if !allowTableViewSelection {
             return
@@ -120,7 +142,7 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
     }
     
     /// Animate the collapsing of view controller or view with collapsing animation inside a tableView
-    func hideViewOrController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+    func hideViewOrController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // If allowTableViewSelection is set to false, then do nothing
         if !allowTableViewSelection {
             return
@@ -171,9 +193,9 @@ extension AccordionAnimationProtocol where Self : AccordionAnimationViewControll
     }
 }
 
-private extension AccordionAnimationProtocol where Self : AccordionAnimationViewController {
+private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewController {
     //MARK: Private helper functions
-    func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+    func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // Update the data source for storing the data
         updateDataSource(viewController.view, tableView: tableView, indexPath: indexPath)
         
@@ -185,7 +207,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
     }
     
     /// Animate the expansion of view
-    func showView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+    func showView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // Update the data source for storing the data
         updateDataSource(view, tableView: tableView, indexPath: indexPath)
         
@@ -210,7 +232,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         self.expandedIndexPathsData[indexPath] = view
     }
     
-    func animateMovementOfView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) {
+    func animateMovementOfView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // Take the necessary screenshot to make the UI ready for aniamtion
         let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
         
@@ -218,7 +240,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
         
         // Get the new instance of the cell at the expandedIndexPath
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
+        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? VPAccordionTableViewCell {
             // Add the view controller's view as a subview to details view
             cell.detailsView.addSubview(view)
             
@@ -288,7 +310,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
     }
     
     /// Take the necessary screenshot to make the UI ready for aniamtion
-    func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : AccordionAnimationCompletionBlock?) -> AccordionAnimationCompletionBlock {
+    func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) -> VPAccordionAnimationCompletionBlock {
         // Get the frame of the expandedIndexPath and the current contentOffset
         let rect = tableView.rectForRowAtIndexPath(indexPath)
         let offset = tableView.contentOffset.y
@@ -303,7 +325,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         // Bool for identifying whether cell is expanding or collapsing
         var isExpanding = false
         
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
+        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? VPAccordionTableViewCell {
             if cell.arrowView != nil {
                 // Get the screenshot of the arrowImage
                 let arrowImage = getScreenShot(cell.arrowView, forRect: cell.arrowView.bounds)
@@ -362,7 +384,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
             
             // Animate the rotation of the arrow view if outlet is set
             if let arrowView = arrowView {
-                if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath) as? VPAccordionTableViewCell {
                     self!.rotateArrowViewForCell(cell, arrowView: arrowView, isExpanding: isExpanding)
                 }
             }
@@ -388,7 +410,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
                 bottomImageView.frame.origin.y = CGRectGetMaxY(rect) - tableView.contentOffset.y
                 
                 }, completion: { (isSuccess) in
-                    if let cell = tableView.cellForRowAtIndexPath(indexPath) as? AccordionTableViewCell {
+                    if let cell = tableView.cellForRowAtIndexPath(indexPath) as? VPAccordionTableViewCell {
                         cell.arrowView?.hidden = false
                     }
                     
@@ -415,7 +437,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
     }
     
     // Helper function for animating the rotation of arrowView
-    func rotateArrowViewForCell(cell : AccordionTableViewCell, arrowView : UIView, isExpanding : Bool) {
+    func rotateArrowViewForCell(cell : VPAccordionTableViewCell, arrowView : UIView, isExpanding : Bool) {
         let rotateArrowAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
         rotateArrowAnimation.duration = isExpanding ? openAnimationDuration : closeAnimationDuration
         rotateArrowAnimation.values = [0, getRotationAngleForArrowForCell(cell, isExpanding: isExpanding)]
@@ -440,7 +462,7 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
     }
     
     // Helper function for calcaulation the angle needed to rotate the arrow view
-    func getRotationAngleForArrowForCell(cell : AccordionTableViewCell, isExpanding : Bool) -> CGFloat {
+    func getRotationAngleForArrowForCell(cell : VPAccordionTableViewCell, isExpanding : Bool) -> CGFloat {
         // Here 4 is the total number of directions available
         var rotationConstant = 0
         
