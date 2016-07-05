@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
-               BuildableName = "AccordionAnimation.app"
+               BuildableName = "VPAccordionAnimationExample.app"
                BlueprintName = "VPAccordionAnimationExample"
                ReferencedContainer = "container:VPAccordionAnimationExample.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
-            BuildableName = "AccordionAnimation.app"
+            BuildableName = "VPAccordionAnimationExample.app"
             BlueprintName = "VPAccordionAnimationExample"
             ReferencedContainer = "container:VPAccordionAnimationExample.xcodeproj">
          </BuildableReference>
@@ -56,7 +56,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
-            BuildableName = "AccordionAnimation.app"
+            BuildableName = "VPAccordionAnimationExample.app"
             BlueprintName = "VPAccordionAnimationExample"
             ReferencedContainer = "container:VPAccordionAnimationExample.xcodeproj">
          </BuildableReference>
@@ -75,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8B5DF4321D1BCE2300B91D78"
-            BuildableName = "AccordionAnimation.app"
+            BuildableName = "VPAccordionAnimationExample.app"
             BlueprintName = "VPAccordionAnimationExample"
             ReferencedContainer = "container:VPAccordionAnimationExample.xcodeproj">
          </BuildableReference>
