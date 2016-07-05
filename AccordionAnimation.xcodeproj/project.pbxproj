@@ -279,7 +279,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = AccordionAnimation/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ymedialabs.AccordionAnimation;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vpm.AccordionAnimation;
 				PRODUCT_NAME = AccordionAnimation;
 			};
 			name = Debug;
@@ -290,7 +290,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = AccordionAnimation/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ymedialabs.AccordionAnimation;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vpm.AccordionAnimation;
 				PRODUCT_NAME = AccordionAnimation;
 			};
 			name = Release;
