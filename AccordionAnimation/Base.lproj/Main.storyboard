@@ -123,7 +123,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="6mL-D8-2Ay">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <rect key="frame" x="0.0" y="60" width="600" height="496"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="tU5-Sp-Sa7">
                                     <size key="itemSize" width="100" height="50"/>
@@ -155,16 +155,28 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oGb-4G-hNB">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="Ocj-Wx-wqd"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="6mL-D8-2Ay" firstAttribute="top" secondItem="oGb-4G-hNB" secondAttribute="bottom" id="1Y7-tS-6Ym"/>
                             <constraint firstItem="6mL-D8-2Ay" firstAttribute="leading" secondItem="F8M-nl-MQn" secondAttribute="leading" id="3ZA-Dk-btM"/>
                             <constraint firstAttribute="trailing" secondItem="tjh-YN-3Hr" secondAttribute="trailing" id="96n-CZ-kJG"/>
                             <constraint firstItem="tjh-YN-3Hr" firstAttribute="top" secondItem="6mL-D8-2Ay" secondAttribute="bottom" id="CvS-WI-Aa7"/>
-                            <constraint firstItem="6mL-D8-2Ay" firstAttribute="top" secondItem="F8M-nl-MQn" secondAttribute="top" id="J6E-gK-5xv"/>
+                            <constraint firstItem="oGb-4G-hNB" firstAttribute="leading" secondItem="F8M-nl-MQn" secondAttribute="leading" id="PFf-S8-ech"/>
+                            <constraint firstAttribute="trailing" secondItem="oGb-4G-hNB" secondAttribute="trailing" id="Qj0-31-hvn"/>
                             <constraint firstAttribute="trailing" secondItem="6mL-D8-2Ay" secondAttribute="trailing" id="RQf-zR-Thq"/>
                             <constraint firstItem="tjh-YN-3Hr" firstAttribute="leading" secondItem="F8M-nl-MQn" secondAttribute="leading" id="WrO-zD-zZp"/>
                             <constraint firstItem="RNd-yL-cyK" firstAttribute="top" secondItem="tjh-YN-3Hr" secondAttribute="bottom" id="aRU-WJ-E6Q"/>
+                            <constraint firstItem="oGb-4G-hNB" firstAttribute="top" secondItem="F8M-nl-MQn" secondAttribute="top" id="pTe-nF-QpR"/>
                         </constraints>
                     </view>
                 </viewController>

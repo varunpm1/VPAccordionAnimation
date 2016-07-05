@@ -144,4 +144,18 @@ class AccordionTableViewCell: UITableViewCell {
             }
         }
     }
+    
+    /// Disable the selection of views that are present inside the detailsView.
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let touch = touches.first
+        
+        if let touch = touch {
+            let touchPoint = touch.locationInView(self.detailsView)
+            
+            // y value will be less than 0 if selection is done on infoView. So call super to call the didSelectRow delegate method automatically. If super isn't called, then didSelectRow delegate method will not be called.
+            if touchPoint.y < 0 {
+                super.touchesBegan(touches, withEvent: event)
+            }
+        }
+    }
 }
