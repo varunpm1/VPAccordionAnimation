@@ -48,6 +48,9 @@ class AccordionAnimationViewController: UIViewController {
     // Default value for clockwise rotation while expanding and anticlockwise while collapsing
     var arrowRotationDirection: ArrowRotation = ArrowRotation.ClockWise
     
+    // Default value to enable the shadow
+    var requiresShadow: Bool = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }

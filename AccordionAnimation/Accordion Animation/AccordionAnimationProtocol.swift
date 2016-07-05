@@ -46,6 +46,9 @@ protocol AccordionAnimationProtocol : class {
     /// Defines the rotation direction for the arrowView if present. Defaults to clockWise direction for expansion and antiClockWise direction for collapsing.
     var arrowRotationDirection : ArrowRotation {get set}
     
+    /// Specify if shadow is required or not. Shadow is used for top and bottom screenshot to display the detailsView as emerging from inside of tableView. Defaults to true.
+    var requiresShadow : Bool {get set}
+    
     //MARK: Protocol Functions
     /// Protocol function to retreive the number of sections in current tableView - Used only during ExpandedAll state
     func getNumberOfSectionsInTableView() -> Int
@@ -340,6 +343,11 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         containerView.addSubview(topImageView)
         containerView.addSubview(bottomImageView)
         
+        // Add shadow path for the detailsView's bottomImageView view if needed
+        if requiresShadow {
+            createShadowPathForView(bottomImageView)
+        }
+        
         // Check if arrow view is added. If yes, then add it to the added screenshot
         if let arrowView = arrowView {
             topImageView.addSubview(arrowView)
@@ -447,5 +455,13 @@ private extension AccordionAnimationProtocol where Self : AccordionAnimationView
         rotationConstant = rotationConstant * (isExpanding ? 1 : -1)
         
         return CGFloat(Double(rotationConstant) * midPiValue)
+    }
+    
+    // Helper function to add the shadow to a view
+    func createShadowPathForView(aView : UIView) {
+        aView.layer.shadowColor = UIColor.blackColor().CGColor
+        aView.layer.shadowOffset = CGSize(width: 0, height: 0.5)
+        aView.layer.shadowOpacity = 0.5
+        aView.layer.shadowPath = CGPathCreateWithRect(aView.bounds, nil)
     }
 }
