@@ -27,6 +27,7 @@ This is a custom class that provides Accordion Animation for cells expanding and
 
 ## Contributing
 **Type - 1**
+
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Commit your changes: `git commit -am 'Add some feature'`
@@ -34,6 +35,7 @@ This is a custom class that provides Accordion Animation for cells expanding and
 5. Submit a pull request :D
 
 **Type - 2**
+
 1. Create an issue
 2. I'll try to add the necessry feature
 3. You can download the update code :P
