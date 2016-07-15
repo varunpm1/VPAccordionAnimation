@@ -37,56 +37,6 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7b6-64-Neg">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="tableCellId" id="kV3-Ed-ODs" customClass="CustomTableViewCell" customModule="VPAccordionAnimationExample" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="600" height="60"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kV3-Ed-ODs" id="Q1f-eK-z3Q">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="59"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z1n-pP-r0Z">
-                                                    <rect key="frame" x="0.0" y="0.0" width="600" height="59"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pOD-Kv-4kb">
-                                                            <rect key="frame" x="0.0" y="0.0" width="600" height="59"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow" translatesAutoresizingMaskIntoConstraints="NO" id="hHK-a4-fD8">
-                                                            <rect key="frame" x="560" y="14" width="32" height="32"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="height" constant="32" id="6Oz-2S-Arn"/>
-                                                                <constraint firstAttribute="width" constant="32" id="o1e-YB-6Lr"/>
-                                                            </constraints>
-                                                        </imageView>
-                                                    </subviews>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstItem="hHK-a4-fD8" firstAttribute="centerY" secondItem="pOD-Kv-4kb" secondAttribute="centerY" id="ROl-g9-aPS"/>
-                                                        <constraint firstItem="pOD-Kv-4kb" firstAttribute="leading" secondItem="z1n-pP-r0Z" secondAttribute="leading" id="T0R-Mz-rgl"/>
-                                                        <constraint firstItem="pOD-Kv-4kb" firstAttribute="top" secondItem="z1n-pP-r0Z" secondAttribute="top" id="bCA-2Z-UAA"/>
-                                                        <constraint firstAttribute="height" constant="59" id="e8P-mt-tsC"/>
-                                                        <constraint firstAttribute="bottom" secondItem="pOD-Kv-4kb" secondAttribute="bottom" id="eIr-bF-Qq9"/>
-                                                        <constraint firstAttribute="trailing" secondItem="hHK-a4-fD8" secondAttribute="trailing" constant="8" id="hs3-xE-I2v"/>
-                                                        <constraint firstAttribute="trailing" secondItem="pOD-Kv-4kb" secondAttribute="trailing" id="s5s-5n-9r2"/>
-                                                    </constraints>
-                                                </view>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="z1n-pP-r0Z" secondAttribute="trailing" id="FXR-IE-qwq"/>
-                                                <constraint firstItem="z1n-pP-r0Z" firstAttribute="leading" secondItem="Q1f-eK-z3Q" secondAttribute="leading" id="bfv-uV-NHK"/>
-                                                <constraint firstItem="z1n-pP-r0Z" firstAttribute="top" secondItem="Q1f-eK-z3Q" secondAttribute="top" id="dtq-nx-tIy"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="arrowView" destination="hHK-a4-fD8" id="sOG-cR-cbU"/>
-                                            <outlet property="displayLabel" destination="pOD-Kv-4kb" id="ZQg-5Q-g6M"/>
-                                            <outlet property="infoView" destination="z1n-pP-r0Z" id="wzW-y7-jST"/>
-                                        </connections>
-                                    </tableViewCell>
-                                </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="BYZ-38-t0r" id="UQC-kZ-JNz"/>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="jxl-Ls-Rc7"/>
@@ -103,7 +53,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="FFK-hR-tCl"/>
                     <connections>
-                        <outlet property="tableView" destination="7b6-64-Neg" id="YBT-kq-37I"/>
+                        <outlet property="tableView" destination="7b6-64-Neg" id="kU0-dG-9HI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -185,7 +135,4 @@
             <point key="canvasLocation" x="832" y="283"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="arrow" width="32" height="32"/>
-    </resources>
 </document>

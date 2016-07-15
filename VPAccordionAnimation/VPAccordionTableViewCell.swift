@@ -38,7 +38,7 @@ class VPAccordionTableViewCell: UITableViewCell {
         case Down
         
         func getOrientationWithDefaultOrientation(defaultOrientation : ArrowDirection) -> UIImageOrientation {
-            let displacement = self.rawValue - defaultOrientation.rawValue
+            let displacement = rawValue - defaultOrientation.rawValue
             
             switch displacement {
             case 0:
@@ -57,10 +57,11 @@ class VPAccordionTableViewCell: UITableViewCell {
         }
     }
     
-    /** **Important: The Height constraint has to be set for infoView instead of bottom constraint** 
-    
-    Info view should be the container view holding all the views as subviews that represent the cell in unexpanded state */
+    /// Info view should be the container view holding all the views as subviews that represent the cell in unexpanded state
     @IBOutlet weak var infoView: UIView!
+    
+    /// UILabel used to display the text in the cell.
+    @IBOutlet weak var displayLabel: UILabel!
     
     /// This variable holds the arrow view if present which needs rotation animation
     @IBOutlet weak var arrowView: UIView!
@@ -73,6 +74,12 @@ class VPAccordionTableViewCell: UITableViewCell {
     
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
     var arrowImageFinalDirection : ArrowDirection = .Down
+    
+    // Variable for handling the height constraint whil layoutSubviews called
+    private var heightConstraint : NSLayoutConstraint?
+    
+    // Will be true if resize frame
+    private var isFrameLoaded = false
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -103,7 +110,9 @@ class VPAccordionTableViewCell: UITableViewCell {
             }
         }
         
-        assert(isHeightConstraintAdded, "InfoView has to have a height constraint")
+        if !isHeightConstraintAdded {
+            isHeightConstraintAdded = replaceBottomConstraintWithHeightConstraint()
+        }
         
         // Create details view
         if detailsView == nil {
@@ -122,10 +131,25 @@ class VPAccordionTableViewCell: UITableViewCell {
         }
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Check if bottomConstraint is added or not. If added, then replace it with new height constant.
+        if !isFrameLoaded {
+            if let heightConstraint = heightConstraint {
+                if detailsView.bounds.size.height == 0 {
+                    heightConstraint.constant = bounds.size.height - 1
+                }
+            }
+            
+            isFrameLoaded = true
+        }
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        self.arrowView?.hidden = false
+        arrowView?.hidden = false
         
         // Remove subviews from details view when reusing cells
         for subview in detailsView.subviews {
@@ -143,13 +167,13 @@ class VPAccordionTableViewCell: UITableViewCell {
     // Update the image view to reset the direction of arrowView
     func updateImageForViewWithCurrentDirection(currentDirection : ArrowDirection) {
         var image : UIImage?
-        let direction = currentDirection.getOrientationWithDefaultOrientation(self.arrowImageInitialDirection)
+        let direction = currentDirection.getOrientationWithDefaultOrientation(arrowImageInitialDirection)
         
         // Get the current image from imageView or buttonView
-        if let imageView = self.arrowView as? UIImageView {
+        if let imageView = arrowView as? UIImageView {
             image = imageView.image
         }
-        else if let buttonView = self.arrowView as? UIButton {
+        else if let buttonView = arrowView as? UIButton {
             image = buttonView.currentImage
         }
         
@@ -158,10 +182,10 @@ class VPAccordionTableViewCell: UITableViewCell {
             let cgiImage = UIImage(CGImage: image.CGImage!, scale: UIScreen.mainScreen().scale, orientation: direction)
             
             // Update the rotated image back to view
-            if let imageView = self.arrowView as? UIImageView {
+            if let imageView = arrowView as? UIImageView {
                 imageView.image = cgiImage
             }
-            else if let buttonView = self.arrowView as? UIButton {
+            else if let buttonView = arrowView as? UIButton {
                 buttonView.setImage(cgiImage, forState: .Normal)
             }
         }
@@ -172,12 +196,46 @@ class VPAccordionTableViewCell: UITableViewCell {
         let touch = touches.first
         
         if let touch = touch {
-            let touchPoint = touch.locationInView(self.detailsView)
+            let touchPoint = touch.locationInView(detailsView)
             
             // y value will be less than 0 if selection is done on infoView. So call super to call the didSelectRow delegate method automatically. If super isn't called, then didSelectRow delegate method will not be called.
             if touchPoint.y < 0 {
                 super.touchesBegan(touches, withEvent: event)
             }
         }
+    }
+    
+    
+    // Private function to replace bottom constraint by height constraint
+    private func replaceBottomConstraintWithHeightConstraint() -> Bool {
+        var isHeightConstraintAdded = false
+        
+        let changeConstraint = { [weak self] (constraint : NSLayoutConstraint) -> NSLayoutConstraint? in
+            if self == nil {
+                return nil
+            }
+            
+            if constraint.firstAttribute == .Bottom && constraint.secondAttribute == .Bottom {
+                return constraint
+            }
+            
+            return nil
+        }
+        
+        for constraint in contentView.constraints {
+            let bottomConstraint = changeConstraint(constraint)
+            
+            if let bottomConstraint = bottomConstraint {
+                contentView.removeConstraint(bottomConstraint)
+                
+                heightConstraint = NSLayoutConstraint(item: infoView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: bounds.size.height)
+                infoView.addConstraint(heightConstraint!)
+                isHeightConstraintAdded = true
+                
+                break
+            }
+        }
+        
+        return isHeightConstraintAdded
     }
 }

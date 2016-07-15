@@ -1,4 +1,3 @@
-
 //
 //  SampleViewController.swift
 //  VPAccordionAnimationExample

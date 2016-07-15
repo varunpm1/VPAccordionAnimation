@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B6DE1071D39089200E9DB67 /* VPAccordionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B6DE1061D39089200E9DB67 /* VPAccordionTableViewCell.xib */; };
+		8B6DE1091D39095900E9DB67 /* SampleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B6DE1081D39095900E9DB67 /* SampleTableViewCell.xib */; };
 		8B82A3411D2BE4340047DF33 /* VPAccordionAnimationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B82A33E1D2BE4340047DF33 /* VPAccordionAnimationProtocol.swift */; };
 		8B82A3421D2BE4340047DF33 /* VPAccordionAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B82A33F1D2BE4340047DF33 /* VPAccordionAnimationViewController.swift */; };
 		8B82A3431D2BE4340047DF33 /* VPAccordionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B82A3401D2BE4340047DF33 /* VPAccordionTableViewCell.swift */; };
@@ -14,13 +16,15 @@
 		8B82A3501D2BE4610047DF33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B82A3451D2BE4610047DF33 /* Assets.xcassets */; };
 		8B82A3511D2BE4610047DF33 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B82A3471D2BE4610047DF33 /* LaunchScreen.storyboard */; };
 		8B82A3521D2BE4610047DF33 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8B82A3491D2BE4610047DF33 /* Main.storyboard */; };
-		8B82A3531D2BE4610047DF33 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B82A34B1D2BE4610047DF33 /* CustomTableViewCell.swift */; };
+		8B82A3531D2BE4610047DF33 /* SampleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B82A34B1D2BE4610047DF33 /* SampleTableViewCell.swift */; };
 		8B82A3551D2BE4610047DF33 /* SampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B82A34D1D2BE4610047DF33 /* SampleViewController.swift */; };
 		8B82A3561D2BE4610047DF33 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B82A34E1D2BE4610047DF33 /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8B5DF4331D1BCE2300B91D78 /* VPAccordionAnimationExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VPAccordionAnimationExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B6DE1061D39089200E9DB67 /* VPAccordionTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VPAccordionTableViewCell.xib; sourceTree = "<group>"; };
+		8B6DE1081D39095900E9DB67 /* SampleTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SampleTableViewCell.xib; sourceTree = "<group>"; };
 		8B82A33E1D2BE4340047DF33 /* VPAccordionAnimationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPAccordionAnimationProtocol.swift; sourceTree = "<group>"; };
 		8B82A33F1D2BE4340047DF33 /* VPAccordionAnimationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPAccordionAnimationViewController.swift; sourceTree = "<group>"; };
 		8B82A3401D2BE4340047DF33 /* VPAccordionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VPAccordionTableViewCell.swift; sourceTree = "<group>"; };
@@ -28,7 +32,7 @@
 		8B82A3451D2BE4610047DF33 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = VPAccordionAnimation/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		8B82A3481D2BE4610047DF33 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8B82A34A1D2BE4610047DF33 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Main.storyboard; sourceTree = "<group>"; };
-		8B82A34B1D2BE4610047DF33 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomTableViewCell.swift; path = VPAccordionAnimation/CustomTableViewCell.swift; sourceTree = SOURCE_ROOT; };
+		8B82A34B1D2BE4610047DF33 /* SampleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SampleTableViewCell.swift; path = VPAccordionAnimation/SampleTableViewCell.swift; sourceTree = SOURCE_ROOT; };
 		8B82A34C1D2BE4610047DF33 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = VPAccordionAnimation/Info.plist; sourceTree = SOURCE_ROOT; };
 		8B82A34D1D2BE4610047DF33 /* SampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SampleViewController.swift; path = VPAccordionAnimation/SampleViewController.swift; sourceTree = SOURCE_ROOT; };
 		8B82A34E1D2BE4610047DF33 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = VPAccordionAnimation/ViewController.swift; sourceTree = SOURCE_ROOT; };
@@ -67,6 +71,7 @@
 				8B82A33E1D2BE4340047DF33 /* VPAccordionAnimationProtocol.swift */,
 				8B82A33F1D2BE4340047DF33 /* VPAccordionAnimationViewController.swift */,
 				8B82A3401D2BE4340047DF33 /* VPAccordionTableViewCell.swift */,
+				8B6DE1061D39089200E9DB67 /* VPAccordionTableViewCell.xib */,
 			);
 			name = VPAccordionAnimation;
 			path = ../../VPAccordionAnimation;
@@ -78,7 +83,8 @@
 				8B82A33D1D2BE4340047DF33 /* VPAccordionAnimation */,
 				8B82A34E1D2BE4610047DF33 /* ViewController.swift */,
 				8B82A34D1D2BE4610047DF33 /* SampleViewController.swift */,
-				8B82A34B1D2BE4610047DF33 /* CustomTableViewCell.swift */,
+				8B82A34B1D2BE4610047DF33 /* SampleTableViewCell.swift */,
+				8B6DE1081D39095900E9DB67 /* SampleTableViewCell.xib */,
 				8B82A3441D2BE4610047DF33 /* AppDelegate.swift */,
 				8B82A3471D2BE4610047DF33 /* LaunchScreen.storyboard */,
 				8B82A3491D2BE4610047DF33 /* Main.storyboard */,
@@ -147,6 +153,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B6DE1071D39089200E9DB67 /* VPAccordionTableViewCell.xib in Resources */,
+				8B6DE1091D39095900E9DB67 /* SampleTableViewCell.xib in Resources */,
 				8B82A3521D2BE4610047DF33 /* Main.storyboard in Resources */,
 				8B82A3501D2BE4610047DF33 /* Assets.xcassets in Resources */,
 				8B82A3511D2BE4610047DF33 /* LaunchScreen.storyboard in Resources */,
@@ -161,7 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B82A34F1D2BE4610047DF33 /* AppDelegate.swift in Sources */,
-				8B82A3531D2BE4610047DF33 /* CustomTableViewCell.swift in Sources */,
+				8B82A3531D2BE4610047DF33 /* SampleTableViewCell.swift in Sources */,
 				8B82A3551D2BE4610047DF33 /* SampleViewController.swift in Sources */,
 				8B82A3431D2BE4340047DF33 /* VPAccordionTableViewCell.swift in Sources */,
 				8B82A3561D2BE4610047DF33 /* ViewController.swift in Sources */,

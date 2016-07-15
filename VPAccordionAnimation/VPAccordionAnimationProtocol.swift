@@ -44,8 +44,8 @@ enum ArrowRotation {
 
 protocol VPAccordionAnimationProtocol : class {
     //MARK: Protocol Variables
-    /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each key will be expanded index path and value will be the expanded view. Used when scrolling is enabled.
-    var expandedIndexPathsData : [NSIndexPath : UIView] {get set}
+    /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each value will be expanded index path. Used when scrolling is enabled.
+    var expandedIndexPaths : [NSIndexPath] {get set}
     
     /// Defines the animation duration to be used for expanding. Defaults to 0.4
     var closeAnimationDuration : NSTimeInterval {get set}
@@ -72,12 +72,6 @@ protocol VPAccordionAnimationProtocol : class {
     var requiresShadow : Bool {get set}
     
     //MARK: Protocol Functions
-    /// Protocol function to retreive the number of sections in current tableView - Used only during ExpandedAll state
-    func getNumberOfSectionsInTableView() -> Int
-    
-    /// Protocol function to retreive the number of rows in a specific section in current tableView - Used only during ExpandedAll state
-    func getNumberOfRowsInTableViewForSection(section : Int) -> Int
-    
     /// Protocol function to create the view controller for the first time - Used only during ExpandedAll state
     func createViewControllerForIndexPath(indexPath : NSIndexPath) -> UIViewController?
     
@@ -95,9 +89,9 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
         }
         
         // If any cell is expanded, then collapse it first
-        if expandedIndexPathsData.keys.count > 0 {
+        if expandedIndexPaths.count > 0 {
             if !multipleCellExpansionEnabled {
-                self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: { [weak self] in
+                hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPaths.first!, callBack: { [weak self] in
                     if self == nil {
                         return
                     }
@@ -111,7 +105,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
         }
         
         // If no cell is expanded or multiple expansion is allowed, then simply expand the cell
-        self.showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
+        showViewController(viewController, tableView: tableView, indexPath: indexPath, callBack: callBack)
     }
     
     /// Animate the showing of view with an expanding animation inside a tableView
@@ -122,9 +116,9 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
         }
         
         // If any cell is expanded, then collapse it first
-        if expandedIndexPathsData.keys.count > 0 {
+        if expandedIndexPaths.count > 0 {
             if !multipleCellExpansionEnabled {
-                self.hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPathsData.keys.first!, callBack: { [weak self] in
+                hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPaths.first!, callBack: { [weak self] in
                     if self == nil {
                         return
                     }
@@ -138,7 +132,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
         }
         
         // If no cell is expanded or multiple expansion is allowed, then simply expand the cell
-        self.showView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
+        showView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
     }
     
     /// Animate the collapsing of view controller or view with collapsing animation inside a tableView
@@ -151,10 +145,11 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
         // If the previous expandedIndexPath and indexPath are same, then collpase the cell.
         if isIndexPathExpanded(indexPath) {
             // Remove all unnecessary data
-            let removedView = self.expandedIndexPathsData.removeValueForKey(indexPath)!
+            expandedIndexPaths.removeAtIndex(expandedIndexPaths.indexOf(indexPath)!)
+            let removedView = getRemovedViewOrControllerForIndexPath(indexPath)
             
             // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells.
-            if (!tableViewScrollEnabledWhenExpanded && self.expandedIndexPathsData.count == 0) {
+            if (!tableViewScrollEnabledWhenExpanded && expandedIndexPaths.count == 0) {
                 tableView.scrollEnabled = true
             }
             
@@ -163,7 +158,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
                 let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
                 
                 // Remove the view controller that was added as a child view controller
-                self.removeControllerForView(removedView)
+                removeControllerForView(removedView)
                 
                 // Reload the tableView content
                 tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
@@ -173,7 +168,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
             }
             else {
                 // Remove the view controller that was added as a child view controller
-                self.removeControllerForView(removedView)
+                removeControllerForView(removedView)
                 
                 // Reload the tableView content
                 let offset = tableView.contentOffset.y
@@ -200,7 +195,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         updateDataSource(viewController.view, tableView: tableView, indexPath: indexPath)
         
         // Add the view controller as a child view controller
-        self.addChildViewController(viewController)
+        addChildViewController(viewController)
         
         // Show viewControlller's view with animation
         animateMovementOfView(viewController.view, tableView: tableView, indexPath: indexPath, callBack: callBack)
@@ -229,7 +224,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         }
         
         // Store the view with indexPath expanded
-        self.expandedIndexPathsData[indexPath] = view
+        expandedIndexPaths.append(indexPath)
     }
     
     func animateMovementOfView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
@@ -253,10 +248,14 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     }
     
     /// Remove the controller from parentViewController after collapsing
-    func removeControllerForView(removedView : UIView) {
+    func removeControllerForView(removedView : AnyObject) {
         // Remove the view controller that was added as a child view controller
-        let removedIndex = self.childViewControllers.indexOf({ (viewController) -> Bool in
-            if viewController.view == removedView {
+        let removedIndex = childViewControllers.indexOf({ (viewController) -> Bool in
+            if viewController == removedView as? UIViewController {
+                return true
+            }
+            
+            if viewController.view == removedView as? UIView {
                 return true
             }
             
@@ -264,7 +263,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         })
         
         if let removedIndex = removedIndex {
-            let removedViewController = self.childViewControllers[removedIndex]
+            let removedViewController = childViewControllers[removedIndex]
             removedViewController.removeFromParentViewController()
         }
     }
@@ -353,8 +352,8 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         }
         
         // Create the top and bottom screenshot for showing the animation
-        let topImageView = self.addScreenshotView(tableView, forFrame: topImageRect)
-        let bottomImageView = self.addScreenshotView(tableView, forFrame: bottomImageRect)
+        let topImageView = addScreenshotView(tableView, forFrame: topImageRect)
+        let bottomImageView = addScreenshotView(tableView, forFrame: bottomImageRect)
         
         // Conatiner view for holding the screenshot image views
         let containerView = UIView(frame: tableView.frame)
@@ -375,7 +374,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
             topImageView.addSubview(arrowView)
         }
         
-        self.view.addSubview(containerView)
+        view.addSubview(containerView)
         
         let callBack = { [weak self] in
             if self == nil {
@@ -451,7 +450,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     
     // Helper function to retreive the screenshot inside a imageView
     func addScreenshotView(tableView : UITableView, forFrame screenshotRect : CGRect) -> UIImageView {
-        let screenshotImage = self.getScreenShot(tableView, forRect: screenshotRect)
+        let screenshotImage = getScreenShot(tableView, forRect: screenshotRect)
         
         // Create the top and bottom image views for showing the animation
         let imageView = UIImageView(image: screenshotImage)

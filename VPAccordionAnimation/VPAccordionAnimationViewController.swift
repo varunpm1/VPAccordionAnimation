@@ -32,8 +32,11 @@ import UIKit
 
 class VPAccordionAnimationViewController: UIViewController {
     
+    // Default tableView instance
+    @IBOutlet weak var tableView: UITableView!
+    
     // Expanded indexPath for storing the selected cell
-    var expandedIndexPathsData : [NSIndexPath : UIView] = [:]
+    var expandedIndexPaths : [NSIndexPath] = []
     
     // Default value for animation
     var closeAnimationDuration: NSTimeInterval = 0.4
@@ -73,16 +76,32 @@ class VPAccordionAnimationViewController: UIViewController {
     // Default value to enable the shadow
     var requiresShadow: Bool = true
     
+    // IndexPathsData for storing view or viewController instances
+    private var indexPathsData : [NSIndexPath : AnyObject] = [:]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.registerNib(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
+        tableView.tableFooterView = UIView()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     //MARK: Public Helper functions
+    /// Helper function for populating the indexPathsData to store view or view controller's data
+    func populateIndexPathsDataForIndexPath(indexPath : NSIndexPath, isViewControllerNeeded : Bool) {
+        if isViewControllerNeeded {
+            indexPathsData[indexPath] = createViewControllerForIndexPath(indexPath)
+        }
+        else {
+            indexPathsData[indexPath] = createViewForIndexPath(indexPath)
+        }
+    }
+    
     /// Helper method for addding four sided constraints for necessary view w.r.t to super view
     func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -96,41 +115,87 @@ class VPAccordionAnimationViewController: UIViewController {
     
     /// Helper method to check if indexPath is already expanded or not
     func isIndexPathExpanded(indexPath : NSIndexPath) -> Bool {
-        return expandedIndexPathsData.keys.contains(indexPath)
+        return expandedIndexPaths.contains(indexPath)
+    }
+    
+    /// Helper method for returning removed view or view Controller instance
+    func getRemovedViewOrControllerForIndexPath(indexPath : NSIndexPath) -> AnyObject {
+        return indexPathsData[indexPath]!
     }
     
     //MARK: Private Helper functions
     // Populate the expanded indexPaths data
     private func populateExpandedIndexPathsData() {
-        let sections = self.getNumberOfSectionsInTableView()
+        let sections = tableView.numberOfSections
         for sectionIndex in 0.stride(to: sections, by: 1) {
-            let rows = self.getNumberOfRowsInTableViewForSection(sectionIndex)
+            let rows = tableView.numberOfRowsInSection(sectionIndex)
             
             for rowIndex in 0.stride(to: rows, by: 1) {
                 let indexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
                 
                 if let viewController = createViewControllerForIndexPath(indexPath) {
-                    expandedIndexPathsData[indexPath] = viewController.view
+                    indexPathsData[indexPath] = viewController.view
                     addChildViewController(viewController)
                 }
                 else if let view = createViewForIndexPath(indexPath) {
-                    expandedIndexPathsData[indexPath] = view
+                    indexPathsData[indexPath] = view
                 }
+                
+                expandedIndexPaths.append(indexPath)
             }
         }
     }
 }
 
+/// Default DataSource and Delegate values
+extension VPAccordionAnimationViewController : UITableViewDataSource, UITableViewDelegate {
+    //MARK: UITableViewDataSource
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return indexPathsData.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("VPAccordionTableViewCell") as! VPAccordionTableViewCell
+        cell.displayLabel?.text = "Row \(indexPath.row + 1)"
+        
+        return cell
+    }
+    
+    //MARK: UITableViewDelegate
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if isIndexPathExpanded(indexPath) {
+            return tableView.bounds.size.height
+        }
+        else {
+            return 120
+        }
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        // Check if cell is expanded or not. If expanded, then shrink the cell. Else expand the cell
+        if isIndexPathExpanded(indexPath) {
+            hideViewOrController(inTableView: tableView, forIndexPath: indexPath, callBack: nil)
+        }
+        else {
+            if let viewController = indexPathsData[indexPath] as? UIViewController {
+                showViewController(viewController, inTableView: tableView, forIndexPath: indexPath, callBack: nil)
+            }
+            else if let view = indexPathsData[indexPath] as? UIView {
+                showView(view, inTableView: tableView, forIndexPath: indexPath, callBack: nil)
+            }
+        }
+    }
+    
+}
+
 /// Implement the protocol methods in extension. Else the override in subclass won't work.
 extension VPAccordionAnimationViewController : VPAccordionAnimationProtocol {
-    func getNumberOfSectionsInTableView() -> Int {
-        return 0
-    }
-    
-    func getNumberOfRowsInTableViewForSection(section: Int) -> Int {
-        return 0
-    }
-    
     func createViewControllerForIndexPath(indexPath: NSIndexPath) -> UIViewController? {
         return nil
     }
@@ -150,8 +215,14 @@ extension VPAccordionAnimationViewController {
                 cell.updateImageForViewWithCurrentDirection(cell.arrowImageFinalDirection)
                 
                 // Add the view back if needed. When scrolling is enabled
-                cell.detailsView.addSubview(expandedIndexPathsData[indexPath]!)
-                addFourSidedConstraintForView(expandedIndexPathsData[indexPath]!, withSuperView: cell.detailsView)
+                if let controller = indexPathsData[indexPath] as? UIViewController {
+                    cell.detailsView.addSubview(controller.view)
+                    addFourSidedConstraintForView(controller.view, withSuperView: cell.detailsView)
+                }
+                else if let view = indexPathsData[indexPath] as? UIView {
+                    cell.detailsView.addSubview(view)
+                    addFourSidedConstraintForView(view, withSuperView: cell.detailsView)
+                }
             }
             else {
                 // Set "Up" direction to reset the image's default position
