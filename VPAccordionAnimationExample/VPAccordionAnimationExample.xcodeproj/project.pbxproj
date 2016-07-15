@@ -85,7 +85,8 @@
 				8B82A3451D2BE4610047DF33 /* Assets.xcassets */,
 				8B82A34C1D2BE4610047DF33 /* Info.plist */,
 			);
-			path = AccordionAnimation;
+			name = AccordionAnimation;
+			path = VPAccordionAnimation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
