@@ -11,7 +11,7 @@ This is a custom class that provides Accordion Animation for cells expanding and
 
 1. Add the VPAccordionAnimation folder inside your project folder (Contains 4 files. Cell nib file only if customization is not needed. If you have a cell, which is a subclass of VPAccordionAnimationCell, then this file is not needed.)
 2. Change the parent class of the view controller containing tableView to VPAccordionAnimationViewController. If there is a BaseVC, then change the parent of VPAccordionAnimationViewController to BaseVC
-3. Use  - 
+3. Call function - 
 
 `func createAccordionDataForIndexPaths(indexPaths: [NSIndexPath], withViewOrControllerData viewData: [AnyObject])`
 
