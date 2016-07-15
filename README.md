@@ -13,9 +13,14 @@ This is a custom class that provides Accordion Animation for cells expanding and
 2. Change the parent class of the view controller containing tableView to VPAccordionAnimationViewController. If there is a BaseVC, then change the parent of VPAccordionAnimationViewController to BaseVC
 3. Call function - 
 
-`func createAccordionDataForIndexPaths(indexPaths: [NSIndexPath], withViewOrControllerData viewData: [AnyObject])`
+`createAccordionDataForIndexPaths(withViewOrControllerData viewData: [AnyObject])`
+
+OR
+
+`createAccordionDataForIndexPaths(indexPaths: [NSIndexPath], withViewOrControllerData viewData: [AnyObject])`
 
 for populating the view or viewController data in viewDidLoad().
+
 4. Change the parent class of tableView cell to VPAccordionTableViewCell
 5. Add a container view inside the tableView cell and connect the outlet to VPAccordionTableViewCell’s infoView outlet
 6. Add all the necessary views that are needed inside the tableViewCells, inside the infoView (as subViews to infoView)
