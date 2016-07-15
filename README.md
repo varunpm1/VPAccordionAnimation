@@ -9,17 +9,14 @@ This is a custom class that provides Accordion Animation for cells expanding and
 
 ## Usage
 
-1. Add the Accordion Folder inside your project folder (Contains 3 files)
+1. Add the VPAccordionAnimation folder inside your project folder (Contains 4 files. Cell nib file only if customization is not needed. If you have a cell, which is a subclass of VPAccordionAnimationCell, then this file is not needed.)
 2. Change the parent class of the view controller containing tableView to VPAccordionAnimationViewController. If there is a BaseVC, then change the parent of VPAccordionAnimationViewController to BaseVC
-3. Set the necessary parameters present in VPAccordionAnimationProtocol in the viewController
-4. Change the parent class of tableView cell to VPAccordionTableViewCell
-5. Add a container view inside the tableView cell and connect the outlet to VPAccordionTableViewCell’s infoView outlet
-6. Add all the necessary views that are needed inside the tableViewCells, inside the infoView (as subViews to infoView)
-7. Add Constraints to infoView - Leading, Trailing, Top and Height - Do not add bottom constraint
-8. If an animation is required for arrow view, then connect it to the arrowView outlet in AccordionTableViewCell. Set the arrowImageInitialDirection and arrowImageFinalDirection in subclass
-9. On tableViewDidSelect delegate method, call showView, showViewController or hideViewOrController as per requirement.
-10. If cellDefaultState is set to expandedAll, then override createViewControllerForIndexPath or createViewForIndexPath and return the necessary controller or view
-11. You can specify the other optional variables for adding extra functionalities like animation duration, arrowView rotation direction
+3. Change the parent class of tableView cell to VPAccordionTableViewCell
+4. Add a container view inside the tableView cell and connect the outlet to VPAccordionTableViewCell’s infoView outlet
+5. Add all the necessary views that are needed inside the tableViewCells, inside the infoView (as subViews to infoView)
+6. Add Constraints to infoView - Leading, Trailing, Top and Height - Do not add bottom constraint
+7. If an animation is required for arrow view, then connect it to the arrowView outlet in VPAccordionTableViewCell. Set the arrowImageInitialDirection and arrowImageFinalDirection in subclass
+8. You can specify the other optional variables for adding extra functionalities like animation duration, arrowView rotation direction, etc.
 
 # ![Screenshot](/VPAccordionAnimation-Screenshot1.png)
 
@@ -41,6 +38,9 @@ This is a custom class that provides Accordion Animation for cells expanding and
 3. You can download the update code :P
 
 ## History
+
+### Version 1.3.0
+Removed common code facilitating easier integration of AccordionAnimation. Default cells will be added if no customization is needed. Override UITableViewDataSource or UITableViewDelegate methods if needed (like specifying different cell height while expanded, cells content etc.). Default height is entire view height when expanded.
 
 ### Version 1.2.2
 Added support for shadow for bottom screenshot, if needed, and code cleaning.
