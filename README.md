@@ -18,9 +18,7 @@ This is a custom class that provides Accordion Animation for cells expanding and
 7. If an animation is required for arrow view, then connect it to the arrowView outlet in VPAccordionTableViewCell. Set the arrowImageInitialDirection and arrowImageFinalDirection in subclass
 8. You can specify the other optional variables for adding extra functionalities like animation duration, arrowView rotation direction, etc.
 
-# ![Screenshot](/VPAccordionAnimation-Screenshot1.png)
-
-# ![Screenshot](/VPAccordionAnimation-Screenshot2.png)
+# ![Screenshot](/VPAccordionAnimation-Screenshot1.png) # ![Screenshot](/VPAccordionAnimation-Screenshot2.png)
 
 ## Contributing
 **Type - 1**
