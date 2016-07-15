@@ -26,8 +26,7 @@ class ViewController: VPAccordionAnimationViewController {
         let viewController7 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
         let viewController8 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
         
-        createAccordionDataForIndexPaths([NSIndexPath(forRow: 0, inSection: 0), NSIndexPath(forRow: 1, inSection: 0), NSIndexPath(forRow: 2, inSection: 0), NSIndexPath(forRow: 3, inSection: 0), NSIndexPath(forRow: 4, inSection: 0), NSIndexPath(forRow: 5, inSection: 0), NSIndexPath(forRow: 6, inSection: 0), NSIndexPath(forRow: 7, inSection: 0)], withViewOrControllerData: [viewController1, viewController2, viewController3, viewController4, viewController5, viewController6, viewController7, viewController8])
-
+        createAccordionDataForIndexPaths(withViewOrControllerData: [viewController1, viewController2, viewController3, viewController4, viewController5, viewController6, viewController7, viewController8])
         
         tableView.registerNib(UINib(nibName: "SampleTableViewCell", bundle: nil), forCellReuseIdentifier: "SampleTableViewCell")
     }

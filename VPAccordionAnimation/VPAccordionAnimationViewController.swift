@@ -90,7 +90,14 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
     }
     
     //MARK: Public Helper functions
-    /// Helper function for populating the indexPathsData to store view or view controller's data
+    /// Helper function for populating the indexPathsData to store view or view controller's data. Defaults to section 0 with row index from 0 to viewCount - 1
+    func createAccordionDataForIndexPaths(withViewOrControllerData viewData : [AnyObject]) {
+        for (index, view) in viewData.enumerate() {
+            indexPathsData[NSIndexPath(forRow: index, inSection: 0)] = view
+        }
+    }
+    
+    /// Helper function for populating the indexPathsData to store view or view controller's data based on indexPaths
     func createAccordionDataForIndexPaths(indexPaths : [NSIndexPath], withViewOrControllerData viewData : [AnyObject]) {
         assert(indexPaths.count == viewData.count, "IndexPaths count should be equal to viewData count")
         
