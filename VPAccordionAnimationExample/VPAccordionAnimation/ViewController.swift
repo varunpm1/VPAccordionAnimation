@@ -16,10 +16,18 @@ class ViewController: VPAccordionAnimationViewController {
         // Do any additional setup after loading the view, typically from a nib.
         edgesForExtendedLayout = .None
         
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let viewController1 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        let viewController2 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        let viewController3 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        let viewController4 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        let viewController5 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        let viewController6 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        let viewController7 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        let viewController8 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
         
-        for row in 0.stride(to: 10, by: 1) {
-            populateIndexPathsDataForIndexPath(NSIndexPath(forRow: row, inSection: 0), isViewControllerNeeded: true)
-        }
+        createAccordionDataForIndexPaths([NSIndexPath(forRow: 0, inSection: 0), NSIndexPath(forRow: 1, inSection: 0), NSIndexPath(forRow: 2, inSection: 0), NSIndexPath(forRow: 3, inSection: 0), NSIndexPath(forRow: 4, inSection: 0), NSIndexPath(forRow: 5, inSection: 0), NSIndexPath(forRow: 6, inSection: 0), NSIndexPath(forRow: 7, inSection: 0)], withViewOrControllerData: [viewController1, viewController2, viewController3, viewController4, viewController5, viewController6, viewController7, viewController8])
+
         
         tableView.registerNib(UINib(nibName: "SampleTableViewCell", bundle: nil), forCellReuseIdentifier: "SampleTableViewCell")
     }
@@ -27,13 +35,6 @@ class ViewController: VPAccordionAnimationViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    override func createViewControllerForIndexPath(indexPath: NSIndexPath) -> UIViewController? {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let viewController = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        
-        return viewController
     }
     
     // Override necessary delegate or datasource as needed. Else default functionality will be implemented.

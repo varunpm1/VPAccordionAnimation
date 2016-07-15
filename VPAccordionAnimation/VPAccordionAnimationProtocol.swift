@@ -70,13 +70,6 @@ protocol VPAccordionAnimationProtocol : class {
     
     /// Specify if shadow is required or not. Shadow is used for top and bottom screenshot to display the detailsView as emerging from inside of tableView. Defaults to true.
     var requiresShadow : Bool {get set}
-    
-    //MARK: Protocol Functions
-    /// Protocol function to create the view controller for the first time - Used only during ExpandedAll state
-    func createViewControllerForIndexPath(indexPath : NSIndexPath) -> UIViewController?
-    
-    /// Protocol function to create the view for the first time - Used only during ExpandedAll state
-    func createViewForIndexPath(indexPath : NSIndexPath) -> UIView?
 }
 
 extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewController {

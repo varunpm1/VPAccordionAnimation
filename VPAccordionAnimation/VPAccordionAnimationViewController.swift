@@ -30,7 +30,7 @@
 
 import UIKit
 
-class VPAccordionAnimationViewController: UIViewController {
+class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimationProtocol {
     
     // Default tableView instance
     @IBOutlet weak var tableView: UITableView!
@@ -62,8 +62,6 @@ class VPAccordionAnimationViewController: UIViewController {
     var cellDefaultState: DefaultState = DefaultState.CollapsedAll {
         didSet {
             if cellDefaultState == DefaultState.ExpandedAll {
-                populateExpandedIndexPathsData()
-                
                 // Forcefully set allowMultipleCellExpansion to true, since all cells are expanded. So multiple cell expansion should be true
                 multipleCellExpansionEnabled = true
             }
@@ -82,8 +80,8 @@ class VPAccordionAnimationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // For default cells
         tableView.registerNib(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
-        tableView.tableFooterView = UIView()
     }
     
     override func didReceiveMemoryWarning() {
@@ -93,12 +91,11 @@ class VPAccordionAnimationViewController: UIViewController {
     
     //MARK: Public Helper functions
     /// Helper function for populating the indexPathsData to store view or view controller's data
-    func populateIndexPathsDataForIndexPath(indexPath : NSIndexPath, isViewControllerNeeded : Bool) {
-        if isViewControllerNeeded {
-            indexPathsData[indexPath] = createViewControllerForIndexPath(indexPath)
-        }
-        else {
-            indexPathsData[indexPath] = createViewForIndexPath(indexPath)
+    func createAccordionDataForIndexPaths(indexPaths : [NSIndexPath], withViewOrControllerData viewData : [AnyObject]) {
+        assert(indexPaths.count == viewData.count, "IndexPaths count should be equal to viewData count")
+        
+        for (index, indexPath) in indexPaths.enumerate() {
+            indexPathsData[indexPath] = viewData[index]
         }
     }
     
@@ -121,29 +118,6 @@ class VPAccordionAnimationViewController: UIViewController {
     /// Helper method for returning removed view or view Controller instance
     func getRemovedViewOrControllerForIndexPath(indexPath : NSIndexPath) -> AnyObject {
         return indexPathsData[indexPath]!
-    }
-    
-    //MARK: Private Helper functions
-    // Populate the expanded indexPaths data
-    private func populateExpandedIndexPathsData() {
-        let sections = tableView.numberOfSections
-        for sectionIndex in 0.stride(to: sections, by: 1) {
-            let rows = tableView.numberOfRowsInSection(sectionIndex)
-            
-            for rowIndex in 0.stride(to: rows, by: 1) {
-                let indexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
-                
-                if let viewController = createViewControllerForIndexPath(indexPath) {
-                    indexPathsData[indexPath] = viewController.view
-                    addChildViewController(viewController)
-                }
-                else if let view = createViewForIndexPath(indexPath) {
-                    indexPathsData[indexPath] = view
-                }
-                
-                expandedIndexPaths.append(indexPath)
-            }
-        }
     }
 }
 
@@ -192,17 +166,6 @@ extension VPAccordionAnimationViewController : UITableViewDataSource, UITableVie
         }
     }
     
-}
-
-/// Implement the protocol methods in extension. Else the override in subclass won't work.
-extension VPAccordionAnimationViewController : VPAccordionAnimationProtocol {
-    func createViewControllerForIndexPath(indexPath: NSIndexPath) -> UIViewController? {
-        return nil
-    }
-    
-    func createViewForIndexPath(indexPath: NSIndexPath) -> UIView? {
-        return nil
-    }
 }
 
 extension VPAccordionAnimationViewController {

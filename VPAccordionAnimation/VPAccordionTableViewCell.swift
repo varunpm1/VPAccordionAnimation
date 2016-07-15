@@ -57,7 +57,9 @@ class VPAccordionTableViewCell: UITableViewCell {
         }
     }
     
-    /// Info view should be the container view holding all the views as subviews that represent the cell in unexpanded state
+    /** **Important: The Height constraint has to be set for infoView instead of bottom constraint**
+     
+     Info view should be the container view holding all the views as subviews that represent the cell in unexpanded state */
     @IBOutlet weak var infoView: UIView!
     
     /// UILabel used to display the text in the cell.
@@ -74,12 +76,6 @@ class VPAccordionTableViewCell: UITableViewCell {
     
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
     var arrowImageFinalDirection : ArrowDirection = .Down
-    
-    // Variable for handling the height constraint whil layoutSubviews called
-    private var heightConstraint : NSLayoutConstraint?
-    
-    // Will be true if resize frame
-    private var isFrameLoaded = false
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -110,9 +106,7 @@ class VPAccordionTableViewCell: UITableViewCell {
             }
         }
         
-        if !isHeightConstraintAdded {
-            isHeightConstraintAdded = replaceBottomConstraintWithHeightConstraint()
-        }
+        assert(isHeightConstraintAdded, "InfoView has to have a height constraint")
         
         // Create details view
         if detailsView == nil {
@@ -128,21 +122,6 @@ class VPAccordionTableViewCell: UITableViewCell {
             
             addConstraints(horizontalConstraint)
             addConstraints([bottomConstraint, topConstraint])
-        }
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Check if bottomConstraint is added or not. If added, then replace it with new height constant.
-        if !isFrameLoaded {
-            if let heightConstraint = heightConstraint {
-                if detailsView.bounds.size.height == 0 {
-                    heightConstraint.constant = bounds.size.height - 1
-                }
-            }
-            
-            isFrameLoaded = true
         }
     }
     
@@ -203,39 +182,5 @@ class VPAccordionTableViewCell: UITableViewCell {
                 super.touchesBegan(touches, withEvent: event)
             }
         }
-    }
-    
-    
-    // Private function to replace bottom constraint by height constraint
-    private func replaceBottomConstraintWithHeightConstraint() -> Bool {
-        var isHeightConstraintAdded = false
-        
-        let changeConstraint = { [weak self] (constraint : NSLayoutConstraint) -> NSLayoutConstraint? in
-            if self == nil {
-                return nil
-            }
-            
-            if constraint.firstAttribute == .Bottom && constraint.secondAttribute == .Bottom {
-                return constraint
-            }
-            
-            return nil
-        }
-        
-        for constraint in contentView.constraints {
-            let bottomConstraint = changeConstraint(constraint)
-            
-            if let bottomConstraint = bottomConstraint {
-                contentView.removeConstraint(bottomConstraint)
-                
-                heightConstraint = NSLayoutConstraint(item: infoView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: bounds.size.height)
-                infoView.addConstraint(heightConstraint!)
-                isHeightConstraintAdded = true
-                
-                break
-            }
-        }
-        
-        return isHeightConstraintAdded
     }
 }
