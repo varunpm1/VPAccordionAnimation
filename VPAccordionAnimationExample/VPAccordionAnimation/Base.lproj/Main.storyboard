@@ -53,7 +53,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="FFK-hR-tCl"/>
                     <connections>
-                        <outlet property="tableView" destination="7b6-64-Neg" id="kU0-dG-9HI"/>
+                        <outlet property="sampleTableView" destination="7b6-64-Neg" id="YmV-jT-4F3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

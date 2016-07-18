@@ -33,7 +33,7 @@ import UIKit
 class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimationProtocol {
     
     // Default tableView instance
-    @IBOutlet weak var tableView: UITableView!
+    private var tableView: UITableView!
     
     // Expanded indexPath for storing the selected cell
     var expandedIndexPaths : [NSIndexPath] = []
@@ -79,9 +79,6 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // For default cells
-        tableView.registerNib(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
     }
     
     override func didReceiveMemoryWarning() {
@@ -91,15 +88,25 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
     
     //MARK: Public Helper functions
     /// Helper function for populating the indexPathsData to store view or view controller's data. Defaults to section 0 with row index from 0 to viewCount - 1
-    func createAccordionDataForIndexPaths(withViewOrControllerData viewData : [AnyObject]) {
+    func createAccordionDataForIndexPaths(withViewOrControllerData viewData : [AnyObject], forTableView tableView : UITableView) {
+        self.tableView = tableView
+        
+        // For default cells
+        self.tableView.registerNib(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
+        
         for (index, view) in viewData.enumerate() {
             indexPathsData[NSIndexPath(forRow: index, inSection: 0)] = view
         }
     }
     
     /// Helper function for populating the indexPathsData to store view or view controller's data based on indexPaths
-    func createAccordionDataForIndexPaths(indexPaths : [NSIndexPath], withViewOrControllerData viewData : [AnyObject]) {
+    func createAccordionDataForIndexPaths(indexPaths : [NSIndexPath], withViewOrControllerData viewData : [AnyObject], forTableView tableView : UITableView) {
         assert(indexPaths.count == viewData.count, "IndexPaths count should be equal to viewData count")
+        
+        self.tableView = tableView
+        
+        // For default cells
+        self.tableView.registerNib(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
         
         for (index, indexPath) in indexPaths.enumerate() {
             indexPathsData[indexPath] = viewData[index]

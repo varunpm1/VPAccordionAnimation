@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: VPAccordionAnimationViewController {
     
+    @IBOutlet weak var sampleTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -26,9 +28,9 @@ class ViewController: VPAccordionAnimationViewController {
         let viewController7 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
         let viewController8 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
         
-        createAccordionDataForIndexPaths(withViewOrControllerData: [viewController1, viewController2, viewController3, viewController4, viewController5, viewController6, viewController7, viewController8])
+        createAccordionDataForIndexPaths(withViewOrControllerData: [viewController1, viewController2, viewController3, viewController4, viewController5, viewController6, viewController7, viewController8], forTableView: sampleTableView)
         
-        tableView.registerNib(UINib(nibName: "SampleTableViewCell", bundle: nil), forCellReuseIdentifier: "SampleTableViewCell")
+        sampleTableView.registerNib(UINib(nibName: "SampleTableViewCell", bundle: nil), forCellReuseIdentifier: "SampleTableViewCell")
     }
 
     override func didReceiveMemoryWarning() {
