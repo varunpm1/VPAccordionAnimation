@@ -47,6 +47,9 @@ for populating the view or viewController data in viewDidLoad().
 
 ## History
 
+### Version 2.0.0
+This version now support Swift 3.0. If you're using XCode lesser than 8, please use the Version 1.3.0 release since this now needs XCode 8 to build and run.
+
 ### Version 1.3.0
 Removed common code facilitating easier integration of AccordionAnimation. Default cells will be added if no customization is needed. Override UITableViewDataSource or UITableViewDelegate methods if needed (like specifying different cell height while expanded, cells content etc.). Default height is entire view height when expanded.
 
