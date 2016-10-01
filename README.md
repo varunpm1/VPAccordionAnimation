@@ -2,6 +2,10 @@
 
 This is a custom class that provides Accordion Animation for cells expanding and collapsing. i.e., expanding or collapsing of cells with auto adjust to center of view. The expanded cell can contain views data or a complete view controller's data.
 
+## IMP
+
+Now VPAccordionAnimation supports Swift 3.0. It now needs XCode 8 or later to build.
+
 ## Requirements
 
 1. iOS 7.0 or later.
