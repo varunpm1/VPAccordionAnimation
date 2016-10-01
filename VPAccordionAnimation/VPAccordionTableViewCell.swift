@@ -32,27 +32,27 @@ import UIKit
 
 class VPAccordionTableViewCell: UITableViewCell {
     enum ArrowDirection : Int {
-        case Left
-        case Up
-        case Right
-        case Down
+        case left
+        case up
+        case right
+        case down
         
-        func getOrientationWithDefaultOrientation(defaultOrientation : ArrowDirection) -> UIImageOrientation {
+        func getOrientationWithDefaultOrientation(_ defaultOrientation : ArrowDirection) -> UIImageOrientation {
             let displacement = rawValue - defaultOrientation.rawValue
             
             switch displacement {
             case 0:
                 // Set the default direction of the image
-                return UIImageOrientation.Up
+                return UIImageOrientation.up
             case 1, -3:
                 // Rotate by 90 degress to Clock wise direction
-                return UIImageOrientation.Right
+                return UIImageOrientation.right
             case 2, -2:
                 // Rotate by 180 degress to Clock wise direction
-                return UIImageOrientation.Down
+                return UIImageOrientation.down
             default:
                 // Rotate by 90 degress to Anti-Clock wise direction
-                return UIImageOrientation.Left
+                return UIImageOrientation.left
             }
         }
     }
@@ -72,10 +72,10 @@ class VPAccordionTableViewCell: UITableViewCell {
     var detailsView: UIView!
     
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
-    var arrowImageInitialDirection : ArrowDirection = .Right
+    var arrowImageInitialDirection : ArrowDirection = .right
     
     /// Set this variable if animation of arrow image is needed. Set the direction for initial and final direction so that rotation is done clockwise direction from current to final direction. Defaults to `Right` to `Down` Clockwise
-    var arrowImageFinalDirection : ArrowDirection = .Down
+    var arrowImageFinalDirection : ArrowDirection = .down
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -89,7 +89,7 @@ class VPAccordionTableViewCell: UITableViewCell {
                 return false
             }
             
-            if constraint.firstAttribute == .Height && constraint.firstItem as? NSObject == self?.infoView {
+            if constraint.firstAttribute == .height && constraint.firstItem as? NSObject == self?.infoView {
                 return true
             }
             else {
@@ -110,15 +110,15 @@ class VPAccordionTableViewCell: UITableViewCell {
         
         // Create details view
         if detailsView == nil {
-            detailsView = UIView(frame: CGRectZero)
+            detailsView = UIView(frame: CGRect.zero)
             addSubview(detailsView)
             
             // Add necessary constraints
             detailsView.translatesAutoresizingMaskIntoConstraints = false
             
-            let horizontalConstraint = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[view]-0-|", options: [], metrics: nil, views: ["view" : detailsView])
-            let bottomConstraint = NSLayoutConstraint(item: detailsView, attribute: .Bottom, relatedBy: .Equal, toItem: self, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-            let topConstraint = NSLayoutConstraint(item: detailsView, attribute: .Top, relatedBy: .Equal, toItem: infoView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+            let horizontalConstraint = NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: [], metrics: nil, views: ["view" : detailsView])
+            let bottomConstraint = NSLayoutConstraint(item: detailsView, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1.0, constant: 0.0)
+            let topConstraint = NSLayoutConstraint(item: detailsView, attribute: .top, relatedBy: .equal, toItem: infoView, attribute: .bottom, multiplier: 1.0, constant: 0.0)
             
             addConstraints(horizontalConstraint)
             addConstraints([bottomConstraint, topConstraint])
@@ -128,7 +128,7 @@ class VPAccordionTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        arrowView?.hidden = false
+        arrowView?.isHidden = false
         
         // Remove subviews from details view when reusing cells
         for subview in detailsView.subviews {
@@ -136,7 +136,7 @@ class VPAccordionTableViewCell: UITableViewCell {
         }
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
@@ -144,7 +144,7 @@ class VPAccordionTableViewCell: UITableViewCell {
     
     //MARK: Update the cell's arrow image
     // Update the image view to reset the direction of arrowView
-    func updateImageForViewWithCurrentDirection(currentDirection : ArrowDirection) {
+    func updateImageForViewWithCurrentDirection(_ currentDirection : ArrowDirection) {
         var image : UIImage?
         let direction = currentDirection.getOrientationWithDefaultOrientation(arrowImageInitialDirection)
         
@@ -158,28 +158,28 @@ class VPAccordionTableViewCell: UITableViewCell {
         
         if let image = image {
             // Reset the image based on the direction
-            let cgiImage = UIImage(CGImage: image.CGImage!, scale: UIScreen.mainScreen().scale, orientation: direction)
+            let cgiImage = UIImage(cgImage: image.cgImage!, scale: UIScreen.main.scale, orientation: direction)
             
             // Update the rotated image back to view
             if let imageView = arrowView as? UIImageView {
                 imageView.image = cgiImage
             }
             else if let buttonView = arrowView as? UIButton {
-                buttonView.setImage(cgiImage, forState: .Normal)
+                buttonView.setImage(cgiImage, for: UIControlState())
             }
         }
     }
     
     /// Disable the selection of views that are present inside the detailsView.
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first
         
         if let touch = touch {
-            let touchPoint = touch.locationInView(detailsView)
+            let touchPoint = touch.location(in: detailsView)
             
             // y value will be less than 0 if selection is done on infoView. So call super to call the didSelectRow delegate method automatically. If super isn't called, then didSelectRow delegate method will not be called.
             if touchPoint.y < 0 {
-                super.touchesBegan(touches, withEvent: event)
+                super.touchesBegan(touches, with: event)
             }
         }
     }

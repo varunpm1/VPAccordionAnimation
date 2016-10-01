@@ -33,20 +33,20 @@ import UIKit
 class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimationProtocol {
     
     // Default tableView instance
-    private var tableView: UITableView!
+    fileprivate var tableView: UITableView!
     
     // Expanded indexPath for storing the selected cell
-    var expandedIndexPaths : [NSIndexPath] = []
+    var expandedIndexPaths : [IndexPath] = []
     
     // Default value for animation
-    var closeAnimationDuration: NSTimeInterval = 0.4
-    var openAnimationDuration: NSTimeInterval = 0.4
+    var closeAnimationDuration: TimeInterval = 0.4
+    var openAnimationDuration: TimeInterval = 0.4
     
     // Default value for disabling multiple expanding of cells
     var multipleCellExpansionEnabled: Bool = false {
         didSet {
             // Check if expandAll is set. If yes, and if allowMultipleCellExpansion is false, then forcefully set allowMultipleCellExpansion to true
-            if cellDefaultState == DefaultState.ExpandedAll && multipleCellExpansionEnabled == false {
+            if cellDefaultState == DefaultState.expandedAll && multipleCellExpansionEnabled == false {
                 multipleCellExpansionEnabled = true
             }
         }
@@ -59,9 +59,9 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
     var allowTableViewSelection: Bool = true
     
     // Default value for collapsed state by deafult
-    var cellDefaultState: DefaultState = DefaultState.CollapsedAll {
+    var cellDefaultState: DefaultState = DefaultState.collapsedAll {
         didSet {
-            if cellDefaultState == DefaultState.ExpandedAll {
+            if cellDefaultState == DefaultState.expandedAll {
                 // Forcefully set allowMultipleCellExpansion to true, since all cells are expanded. So multiple cell expansion should be true
                 multipleCellExpansionEnabled = true
             }
@@ -69,13 +69,13 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
     }
     
     // Default value for clockwise rotation while expanding and anticlockwise while collapsing
-    var arrowRotationDirection: ArrowRotation = ArrowRotation.ClockWise
+    var arrowRotationDirection: ArrowRotation = ArrowRotation.clockWise
     
     // Default value to enable the shadow
     var requiresShadow: Bool = true
     
     // IndexPathsData for storing view or viewController instances
-    private var indexPathsData : [NSIndexPath : AnyObject] = [:]
+    fileprivate var indexPathsData : [IndexPath : AnyObject] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,45 +92,45 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
         self.tableView = tableView
         
         // For default cells
-        self.tableView.registerNib(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
+        self.tableView.register(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
         
-        for (index, view) in viewData.enumerate() {
-            indexPathsData[NSIndexPath(forRow: index, inSection: 0)] = view
+        for (index, view) in viewData.enumerated() {
+            indexPathsData[IndexPath(row: index, section: 0)] = view
         }
     }
     
     /// Helper function for populating the indexPathsData to store view or view controller's data based on indexPaths
-    func createAccordionDataForIndexPaths(indexPaths : [NSIndexPath], withViewOrControllerData viewData : [AnyObject], forTableView tableView : UITableView) {
+    func createAccordionDataForIndexPaths(_ indexPaths : [IndexPath], withViewOrControllerData viewData : [AnyObject], forTableView tableView : UITableView) {
         assert(indexPaths.count == viewData.count, "IndexPaths count should be equal to viewData count")
         
         self.tableView = tableView
         
         // For default cells
-        self.tableView.registerNib(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
+        self.tableView.register(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
         
-        for (index, indexPath) in indexPaths.enumerate() {
+        for (index, indexPath) in indexPaths.enumerated() {
             indexPathsData[indexPath] = viewData[index]
         }
     }
     
     /// Helper method for addding four sided constraints for necessary view w.r.t to super view
-    func addFourSidedConstraintForView(view : UIView, withSuperView superView : UIView) {
+    func addFourSidedConstraintForView(_ view : UIView, withSuperView superView : UIView) {
         view.translatesAutoresizingMaskIntoConstraints = false
-        let leadingConstraint = NSLayoutConstraint(item: view, attribute: .Leading, relatedBy: .Equal, toItem: superView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
-        let trailingConstraint = NSLayoutConstraint(item: view, attribute: .Trailing, relatedBy: .Equal, toItem: superView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
-        let topConstraint = NSLayoutConstraint(item: view, attribute: .Top, relatedBy: .Equal, toItem: superView, attribute: .Top, multiplier: 1.0, constant: 0.0)
-        let bottomConstraint = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: superView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+        let leadingConstraint = NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .equal, toItem: superView, attribute: .leading, multiplier: 1.0, constant: 0.0)
+        let trailingConstraint = NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: superView, attribute: .trailing, multiplier: 1.0, constant: 0.0)
+        let topConstraint = NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: superView, attribute: .top, multiplier: 1.0, constant: 0.0)
+        let bottomConstraint = NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: superView, attribute: .bottom, multiplier: 1.0, constant: 0.0)
         
         superView.addConstraints([leadingConstraint, trailingConstraint, topConstraint, bottomConstraint])
     }
     
     /// Helper method to check if indexPath is already expanded or not
-    func isIndexPathExpanded(indexPath : NSIndexPath) -> Bool {
+    func isIndexPathExpanded(_ indexPath : IndexPath) -> Bool {
         return expandedIndexPaths.contains(indexPath)
     }
     
     /// Helper method for returning removed view or view Controller instance
-    func getRemovedViewOrControllerForIndexPath(indexPath : NSIndexPath) -> AnyObject {
+    func getRemovedViewOrControllerForIndexPath(_ indexPath : IndexPath) -> AnyObject {
         return indexPathsData[indexPath]!
     }
 }
@@ -138,23 +138,23 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
 /// Default DataSource and Delegate values
 extension VPAccordionAnimationViewController : UITableViewDataSource, UITableViewDelegate {
     //MARK: UITableViewDataSource
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return indexPathsData.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("VPAccordionTableViewCell") as! VPAccordionTableViewCell
-        cell.displayLabel?.text = "Row \(indexPath.row + 1)"
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "VPAccordionTableViewCell") as! VPAccordionTableViewCell
+        cell.displayLabel?.text = "Row \((indexPath as NSIndexPath).row + 1)"
         
         return cell
     }
     
     //MARK: UITableViewDelegate
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if isIndexPathExpanded(indexPath) {
             return tableView.bounds.size.height
         }
@@ -163,8 +163,8 @@ extension VPAccordionAnimationViewController : UITableViewDataSource, UITableVie
         }
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         
         // Check if cell is expanded or not. If expanded, then shrink the cell. Else expand the cell
         if isIndexPathExpanded(indexPath) {
@@ -180,11 +180,8 @@ extension VPAccordionAnimationViewController : UITableViewDataSource, UITableVie
         }
     }
     
-}
-
-extension VPAccordionAnimationViewController {
     /// This method reinitializes arrow image position if needed. If arrow animation is needed and subclasses want this delegate method to be implemented, then subclasses has to call this method using super. Else animation won't work as needed
-    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // If the expandedIndexPath is the same as the cell's indexPath, then set the arrow image (if present) to final state, else in initial state
         if let cell = cell as? VPAccordionTableViewCell {
             if isIndexPathExpanded(indexPath) {

@@ -16,21 +16,21 @@ class ViewController: VPAccordionAnimationViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view, typically from a nib.
-        edgesForExtendedLayout = .None
+        edgesForExtendedLayout = UIRectEdge()
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let viewController1 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        let viewController2 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        let viewController3 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        let viewController4 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        let viewController5 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        let viewController6 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        let viewController7 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
-        let viewController8 = storyboard.instantiateViewControllerWithIdentifier("sampleVCId")
+        let viewController1 = storyboard.instantiateViewController(withIdentifier: "sampleVCId")
+        let viewController2 = storyboard.instantiateViewController(withIdentifier: "sampleVCId")
+        let viewController3 = storyboard.instantiateViewController(withIdentifier: "sampleVCId")
+        let viewController4 = storyboard.instantiateViewController(withIdentifier: "sampleVCId")
+        let viewController5 = storyboard.instantiateViewController(withIdentifier: "sampleVCId")
+        let viewController6 = storyboard.instantiateViewController(withIdentifier: "sampleVCId")
+        let viewController7 = storyboard.instantiateViewController(withIdentifier: "sampleVCId")
+        let viewController8 = storyboard.instantiateViewController(withIdentifier: "sampleVCId")
         
         createAccordionDataForIndexPaths(withViewOrControllerData: [viewController1, viewController2, viewController3, viewController4, viewController5, viewController6, viewController7, viewController8], forTableView: sampleTableView)
         
-        sampleTableView.registerNib(UINib(nibName: "SampleTableViewCell", bundle: nil), forCellReuseIdentifier: "SampleTableViewCell")
+        sampleTableView.register(UINib(nibName: "SampleTableViewCell", bundle: nil), forCellReuseIdentifier: "SampleTableViewCell")
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,9 +39,9 @@ class ViewController: VPAccordionAnimationViewController {
     }
     
     // Override necessary delegate or datasource as needed. Else default functionality will be implemented.
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SampleTableViewCell") as! SampleTableViewCell
-        cell.displayLabel?.text = "Row \(indexPath.row + 1)"
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SampleTableViewCell") as! SampleTableViewCell
+        cell.displayLabel?.text = "Row \((indexPath as NSIndexPath).row + 1)"
         
         return cell
     }

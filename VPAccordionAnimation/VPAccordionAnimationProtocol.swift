@@ -33,25 +33,25 @@ import UIKit
 typealias VPAccordionAnimationCompletionBlock = (() -> ())
 
 enum DefaultState {
-    case ExpandedAll
-    case CollapsedAll
+    case expandedAll
+    case collapsedAll
 }
 
 enum ArrowRotation {
-    case ClockWise
-    case AntiClockWise
+    case clockWise
+    case antiClockWise
 }
 
 protocol VPAccordionAnimationProtocol : class {
     //MARK: Protocol Variables
     /// Use this variable for preparing the cell's height while expanding or collapsing. If set, then animation will be expanding. If not collpasing. Each value will be expanded index path. Used when scrolling is enabled.
-    var expandedIndexPaths : [NSIndexPath] {get set}
+    var expandedIndexPaths : [IndexPath] {get set}
     
     /// Defines the animation duration to be used for expanding. Defaults to 0.4
-    var closeAnimationDuration : NSTimeInterval {get set}
+    var closeAnimationDuration : TimeInterval {get set}
     
     /// Defines the animation duration to be used for collapsing. Defaults to 0.4
-    var openAnimationDuration : NSTimeInterval {get set}
+    var openAnimationDuration : TimeInterval {get set}
     
     /// Enum value that specifies the state of all the cells. All the cells can be expanded or collapsed. Defaults to CollapsedAll
     var cellDefaultState : DefaultState {get set}
@@ -75,7 +75,7 @@ protocol VPAccordionAnimationProtocol : class {
 extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewController {
     //MARK: Public functions
     /// Animate the showing of view controller with an expanding animation inside a tableView
-    func showViewController(viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
+    func showViewController(_ viewController : UIViewController, inTableView tableView : UITableView, forIndexPath indexPath : IndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // If allowTableViewSelection is set to false, then do nothing
         if !allowTableViewSelection {
             return
@@ -84,7 +84,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
         // If any cell is expanded, then collapse it first
         if expandedIndexPaths.count > 0 {
             if !multipleCellExpansionEnabled {
-                hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPaths.first!, callBack: { [weak self] in
+                hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPaths.first! as IndexPath, callBack: { [weak self] in
                     if self == nil {
                         return
                     }
@@ -102,7 +102,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
     }
     
     /// Animate the showing of view with an expanding animation inside a tableView
-    func showView(view : UIView, inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
+    func showView(_ view : UIView, inTableView tableView : UITableView, forIndexPath indexPath : IndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // If allowTableViewSelection is set to false, then do nothing
         if !allowTableViewSelection {
             return
@@ -111,7 +111,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
         // If any cell is expanded, then collapse it first
         if expandedIndexPaths.count > 0 {
             if !multipleCellExpansionEnabled {
-                hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPaths.first!, callBack: { [weak self] in
+                hideViewOrController(inTableView: tableView, forIndexPath: expandedIndexPaths.first! as IndexPath, callBack: { [weak self] in
                     if self == nil {
                         return
                     }
@@ -129,7 +129,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
     }
     
     /// Animate the collapsing of view controller or view with collapsing animation inside a tableView
-    func hideViewOrController(inTableView tableView : UITableView, forIndexPath indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
+    func hideViewOrController(inTableView tableView : UITableView, forIndexPath indexPath : IndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // If allowTableViewSelection is set to false, then do nothing
         if !allowTableViewSelection {
             return
@@ -138,12 +138,12 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
         // If the previous expandedIndexPath and indexPath are same, then collpase the cell.
         if isIndexPathExpanded(indexPath) {
             // Remove all unnecessary data
-            expandedIndexPaths.removeAtIndex(expandedIndexPaths.indexOf(indexPath)!)
+            expandedIndexPaths.remove(at: expandedIndexPaths.index(of: indexPath)!)
             let removedView = getRemovedViewOrControllerForIndexPath(indexPath)
             
             // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells.
             if (!tableViewScrollEnabledWhenExpanded && expandedIndexPaths.count == 0) {
-                tableView.scrollEnabled = true
+                tableView.isScrollEnabled = true
             }
             
             // Take the necessary screenshot to make the UI ready for aniamtion
@@ -154,7 +154,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
                 removeControllerForView(removedView)
                 
                 // Reload the tableView content
-                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                tableView.reloadRows(at: [indexPath], with: .none)
                 
                 // Animate the collapsing of tableView
                 animationBlock()
@@ -171,7 +171,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
                 tableView.contentOffset.y = max(0, offset - removedView.bounds.size.height + 1)
                 
                 // Allow for loading of cells' data. Call in main queue to load all data before showing another animation if needed. Else arrow rotation issue is found
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     if let callBack = callBack {
                         callBack()
                     }
@@ -183,7 +183,7 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
 
 private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewController {
     //MARK: Private helper functions
-    func showViewController(viewController : UIViewController, tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
+    func showViewController(_ viewController : UIViewController, tableView : UITableView, indexPath : IndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // Update the data source for storing the data
         updateDataSource(viewController.view, tableView: tableView, indexPath: indexPath)
         
@@ -195,7 +195,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     }
     
     /// Animate the expansion of view
-    func showView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
+    func showView(_ view : UIView, tableView : UITableView, indexPath : IndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // Update the data source for storing the data
         updateDataSource(view, tableView: tableView, indexPath: indexPath)
         
@@ -203,7 +203,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         animateMovementOfView(view, tableView: tableView, indexPath: indexPath, callBack: callBack)
     }
     
-    func updateDataSource(view : UIView, tableView : UITableView, indexPath : NSIndexPath) {
+    func updateDataSource(_ view : UIView, tableView : UITableView, indexPath : IndexPath) {
         // Since expanding, set the necessary variables
         
         // If indexPath is already present, then do nothing
@@ -213,22 +213,22 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         
         // Block scrolling only if allowTableViewScrollingWhenExpanded is set to false. Else, scrolling will be enabled by default
         if !tableViewScrollEnabledWhenExpanded {
-            tableView.scrollEnabled = false
+            tableView.isScrollEnabled = false
         }
         
         // Store the view with indexPath expanded
         expandedIndexPaths.append(indexPath)
     }
     
-    func animateMovementOfView(view : UIView, tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
+    func animateMovementOfView(_ view : UIView, tableView : UITableView, indexPath : IndexPath, callBack : VPAccordionAnimationCompletionBlock?) {
         // Take the necessary screenshot to make the UI ready for aniamtion
         let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
         
         // Reload the tableView content
-        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+        tableView.reloadRows(at: [indexPath], with: .none)
         
         // Get the new instance of the cell at the expandedIndexPath
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? VPAccordionTableViewCell {
+        if let cell = tableView.cellForRow(at: indexPath) as? VPAccordionTableViewCell {
             // Add the view controller's view as a subview to details view
             cell.detailsView.addSubview(view)
             
@@ -241,9 +241,9 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     }
     
     /// Remove the controller from parentViewController after collapsing
-    func removeControllerForView(removedView : AnyObject) {
+    func removeControllerForView(_ removedView : AnyObject) {
         // Remove the view controller that was added as a child view controller
-        let removedIndex = childViewControllers.indexOf({ (viewController) -> Bool in
+        let removedIndex = childViewControllers.index(where: { (viewController) -> Bool in
             if viewController == removedView as? UIViewController {
                 return true
             }
@@ -262,7 +262,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     }
     
     /// Get the screenshot based on the rect size and origin.
-    func getScreenShot(aView : UIView, forRect rect : CGRect) -> UIImage {
+    func getScreenShot(_ aView : UIView, forRect rect : CGRect) -> UIImage {
         // Preserve the previous frame and contentOffset of the scrollView (tableView)
         let frame = aView.frame
         var offset : CGPoint?
@@ -272,10 +272,10 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
             offset = aView.contentOffset
         }
         
-        UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.mainScreen().scale)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.main.scale)
         
         // Move the frame for the screenshot starting position
-        CGContextTranslateCTM(UIGraphicsGetCurrentContext(), rect.origin.x, -rect.origin.y);
+        UIGraphicsGetCurrentContext()?.translateBy(x: rect.origin.x, y: -rect.origin.y);
         
         // Set the new size for the view
         aView.frame.size = rect.size
@@ -285,7 +285,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
             aView.contentOffset.y = rect.origin.y
         }
         
-        aView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        aView.layer.render(in: UIGraphicsGetCurrentContext()!)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
@@ -298,18 +298,18 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
             aView.contentOffset = offset!
         }
         
-        return image
+        return image!
     }
     
     /// Take the necessary screenshot to make the UI ready for aniamtion
-    func createScreenshotUI(tableView : UITableView, indexPath : NSIndexPath, callBack : VPAccordionAnimationCompletionBlock?) -> VPAccordionAnimationCompletionBlock {
+    func createScreenshotUI(_ tableView : UITableView, indexPath : IndexPath, callBack : VPAccordionAnimationCompletionBlock?) -> VPAccordionAnimationCompletionBlock {
         // Get the frame of the expandedIndexPath and the current contentOffset
-        let rect = tableView.rectForRowAtIndexPath(indexPath)
+        let rect = tableView.rectForRow(at: indexPath)
         let offset = tableView.contentOffset.y
         
         // A full table height + current cell height is added for safety purpose. An extra height is added for scrolling purpose. i.e., if bottom image is scrolled upwards, then empty image will be seen and vice-versa. To avoid this, rendering remaining bottom/top view so that image will not be empty
-        let topImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMinY(rect) - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height + rect.size.height)
-        let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: CGRectGetMaxY(rect), width: tableView.bounds.size.width, height: tableView.bounds.size.height)
+        let topImageRect = CGRect(x: tableView.frame.origin.x, y: rect.minY - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height + rect.size.height)
+        let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: rect.maxY, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
         
         // Get the instance of arrowView if animation needed for rotating the arrow
         var arrowView : UIView?
@@ -317,15 +317,15 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         // Bool for identifying whether cell is expanding or collapsing
         var isExpanding = false
         
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? VPAccordionTableViewCell {
+        if let cell = tableView.cellForRow(at: indexPath) as? VPAccordionTableViewCell {
             if cell.arrowView != nil {
                 // Get the screenshot of the arrowImage
                 let arrowImage = getScreenShot(cell.arrowView, forRect: cell.arrowView.bounds)
                 arrowView = UIImageView(image: arrowImage)
-                arrowView?.frame = CGRect(x: cell.arrowView.frame.origin.x, y: rect.origin.y - CGRectGetMinY(topImageRect) + cell.arrowView.frame.origin.y, width: cell.arrowView.frame.size.width, height: cell.arrowView.frame.size.height)
+                arrowView?.frame = CGRect(x: cell.arrowView.frame.origin.x, y: rect.origin.y - topImageRect.minY + cell.arrowView.frame.origin.y, width: cell.arrowView.frame.size.width, height: cell.arrowView.frame.size.height)
                 
                 // Hide the arrow View before taking a screenshot. Unhide after animation
-                cell.arrowView.hidden = true
+                cell.arrowView.isHidden = true
                 
                 // Check if the cell is collapsing or not
                 var image : UIImage?
@@ -338,7 +338,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
                     image = buttonView.currentImage
                 }
                 
-                if let image = image where image.imageOrientation == .Up {
+                if let image = image , image.imageOrientation == .up {
                     isExpanding = true
                 }
             }
@@ -350,7 +350,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         
         // Conatiner view for holding the screenshot image views
         let containerView = UIView(frame: tableView.frame)
-        containerView.backgroundColor = UIColor.clearColor()
+        containerView.backgroundColor = UIColor.clear
         containerView.clipsToBounds = true
         
         // Add the image views on top of self
@@ -376,34 +376,34 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
             
             // Animate the rotation of the arrow view if outlet is set
             if let arrowView = arrowView {
-                if let cell = tableView.cellForRowAtIndexPath(indexPath) as? VPAccordionTableViewCell {
+                if let cell = tableView.cellForRow(at: indexPath) as? VPAccordionTableViewCell {
                     self!.rotateArrowViewForCell(cell, arrowView: arrowView, isExpanding: isExpanding)
                 }
             }
             
             // Animate the expansion/collapsing of table cells
-            UIView.animateWithDuration(isExpanding ? self!.openAnimationDuration : self!.closeAnimationDuration, animations: {
+            UIView.animate(withDuration: isExpanding ? self!.openAnimationDuration : self!.closeAnimationDuration, animations: {
                 // Scroll the tableView to middle if needed
                 if isExpanding {
-                    tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Middle, animated: false)
+                    tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
                 }
                 else {
-                    tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: false)
+                    tableView.scrollToRow(at: indexPath, at: .none, animated: false)
                 }
                 
                 // Get the new frame for the selected indexPath
-                let rect = tableView.rectForRowAtIndexPath(indexPath)
+                let rect = tableView.rectForRow(at: indexPath)
                 
                 // Calculate the frame change of tableView
                 let offsetChange = offset - tableView.contentOffset.y
                 
                 // Set the topImageView and bottomImageView frame
                 topImageView.frame.origin.y += offsetChange
-                bottomImageView.frame.origin.y = CGRectGetMaxY(rect) - tableView.contentOffset.y
+                bottomImageView.frame.origin.y = rect.maxY - tableView.contentOffset.y
                 
                 }, completion: { (isSuccess) in
-                    if let cell = tableView.cellForRowAtIndexPath(indexPath) as? VPAccordionTableViewCell {
-                        cell.arrowView?.hidden = false
+                    if let cell = tableView.cellForRow(at: indexPath) as? VPAccordionTableViewCell {
+                        cell.arrowView?.isHidden = false
                     }
                     
                     // Remove all animations after completion
@@ -417,7 +417,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
                     
                     // On successful animation, call callBack to indicate the animation completion
                     // Use dispatch_async to reload the cells and then execute further processing. Issue with arrow when show is called immediately after hide
-                    dispatch_async(dispatch_get_main_queue(), {
+                    DispatchQueue.main.async(execute: {
                         if let callBack = callBack {
                             callBack()
                         }
@@ -429,20 +429,20 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     }
     
     // Helper function for animating the rotation of arrowView
-    func rotateArrowViewForCell(cell : VPAccordionTableViewCell, arrowView : UIView, isExpanding : Bool) {
+    func rotateArrowViewForCell(_ cell : VPAccordionTableViewCell, arrowView : UIView, isExpanding : Bool) {
         let rotateArrowAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
         rotateArrowAnimation.duration = isExpanding ? openAnimationDuration : closeAnimationDuration
         rotateArrowAnimation.values = [0, getRotationAngleForArrowForCell(cell, isExpanding: isExpanding)]
         rotateArrowAnimation.keyTimes = [0, 1]
         rotateArrowAnimation.timingFunctions = [CAMediaTimingFunction.init(name: kCAMediaTimingFunctionLinear)]
         rotateArrowAnimation.fillMode = kCAFillModeForwards
-        rotateArrowAnimation.removedOnCompletion = false
+        rotateArrowAnimation.isRemovedOnCompletion = false
         
-        arrowView.layer.addAnimation(rotateArrowAnimation, forKey: "rotateAnimation")
+        arrowView.layer.add(rotateArrowAnimation, forKey: "rotateAnimation")
     }
     
     // Helper function to retreive the screenshot inside a imageView
-    func addScreenshotView(tableView : UITableView, forFrame screenshotRect : CGRect) -> UIImageView {
+    func addScreenshotView(_ tableView : UITableView, forFrame screenshotRect : CGRect) -> UIImageView {
         let screenshotImage = getScreenShot(tableView, forRect: screenshotRect)
         
         // Create the top and bottom image views for showing the animation
@@ -454,11 +454,11 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     }
     
     // Helper function for calcaulation the angle needed to rotate the arrow view
-    func getRotationAngleForArrowForCell(cell : VPAccordionTableViewCell, isExpanding : Bool) -> CGFloat {
+    func getRotationAngleForArrowForCell(_ cell : VPAccordionTableViewCell, isExpanding : Bool) -> CGFloat {
         // Here 4 is the total number of directions available
         var rotationConstant = 0
         
-        if (arrowRotationDirection == ArrowRotation.ClockWise) {
+        if (arrowRotationDirection == ArrowRotation.clockWise) {
             rotationConstant = (4 + cell.arrowImageFinalDirection.rawValue - cell.arrowImageInitialDirection.rawValue) % 4
         }
         else {
@@ -472,10 +472,10 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     }
     
     // Helper function to add the shadow to a view
-    func createShadowPathForView(aView : UIView) {
-        aView.layer.shadowColor = UIColor.blackColor().CGColor
+    func createShadowPathForView(_ aView : UIView) {
+        aView.layer.shadowColor = UIColor.black.cgColor
         aView.layer.shadowOffset = CGSize(width: 0, height: 0.5)
         aView.layer.shadowOpacity = 0.5
-        aView.layer.shadowPath = CGPathCreateWithRect(aView.bounds, nil)
+        aView.layer.shadowPath = CGPath(rect: aView.bounds, transform: nil)
     }
 }
