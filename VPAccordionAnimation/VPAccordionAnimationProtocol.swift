@@ -153,8 +153,14 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
                 // Remove the view controller that was added as a child view controller
                 removeControllerForView(removedView)
                 
+                // Get the previous offset. Used for estimated row height issue
+                let prevOffset = tableView.contentOffset.y
+                
                 // Reload the tableView content
                 tableView.reloadRows(at: [indexPath], with: .none)
+                
+                // Set the previous offset back. Used for estimated row height issue
+                tableView.contentOffset.y = prevOffset
                 
                 // Animate the collapsing of tableView
                 animationBlock()
@@ -224,8 +230,14 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         // Take the necessary screenshot to make the UI ready for aniamtion
         let animationBlock = createScreenshotUI(tableView, indexPath: indexPath, callBack: callBack)
         
+        // Get the previous offset. Used for estimated row height issue
+        let prevOffset = tableView.contentOffset.y
+        
         // Reload the tableView content
         tableView.reloadRows(at: [indexPath], with: .none)
+        
+        // Set the previous offset back. Used for estimated row height issue
+        tableView.contentOffset.y = prevOffset
         
         // Get the new instance of the cell at the expandedIndexPath
         if let cell = tableView.cellForRow(at: indexPath) as? VPAccordionTableViewCell {
@@ -317,6 +329,11 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         // Bool for identifying whether cell is expanding or collapsing
         var isExpanding = false
         
+        // If there is a section footer view, then hide it when taking a screenshot
+        if let footerView = tableView.footerView(forSection: indexPath.section) {
+            footerView.isHidden = true
+        }
+        
         if let cell = tableView.cellForRow(at: indexPath) as? VPAccordionTableViewCell {
             if cell.arrowView != nil {
                 // Get the screenshot of the arrowImage
@@ -369,6 +386,11 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         
         view.addSubview(containerView)
         
+        // If there is a section footer view, then unhide it after taking a screenshot
+        if let footerView = tableView.footerView(forSection: indexPath.section) {
+            footerView.isHidden = false
+        }
+        
         let callBack = { [weak self] in
             if self == nil {
                 return
@@ -401,27 +423,27 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
                 topImageView.frame.origin.y += offsetChange
                 bottomImageView.frame.origin.y = rect.maxY - tableView.contentOffset.y
                 
-                }, completion: { (isSuccess) in
-                    if let cell = tableView.cellForRow(at: indexPath) as? VPAccordionTableViewCell {
-                        cell.arrowView?.isHidden = false
+            }, completion: { (isSuccess) in
+                if let cell = tableView.cellForRow(at: indexPath) as? VPAccordionTableViewCell {
+                    cell.arrowView?.isHidden = false
+                }
+                
+                // Remove all animations after completion
+                arrowView?.layer.removeAllAnimations()
+                arrowView = nil
+                
+                // On completion, remove the imageViews
+                topImageView.removeFromSuperview()
+                bottomImageView.removeFromSuperview()
+                containerView.removeFromSuperview()
+                
+                // On successful animation, call callBack to indicate the animation completion
+                // Use dispatch_async to reload the cells and then execute further processing. Issue with arrow when show is called immediately after hide
+                DispatchQueue.main.async(execute: {
+                    if let callBack = callBack {
+                        callBack()
                     }
-                    
-                    // Remove all animations after completion
-                    arrowView?.layer.removeAllAnimations()
-                    arrowView = nil
-                    
-                    // On completion, remove the imageViews
-                    topImageView.removeFromSuperview()
-                    bottomImageView.removeFromSuperview()
-                    containerView.removeFromSuperview()
-                    
-                    // On successful animation, call callBack to indicate the animation completion
-                    // Use dispatch_async to reload the cells and then execute further processing. Issue with arrow when show is called immediately after hide
-                    DispatchQueue.main.async(execute: {
-                        if let callBack = callBack {
-                            callBack()
-                        }
-                    })
+                })
             })
         }
         
