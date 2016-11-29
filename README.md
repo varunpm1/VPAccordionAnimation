@@ -51,6 +51,9 @@ for populating the view or viewController data in viewDidLoad().
 
 ## History
 
+### Version 2.1.0
+Fixed layout issue when using UITablewViewAutomaticDimension for cells
+
 ### Version 2.0.0
 This version now support Swift 3.0. If you're using XCode lesser than 8, please use the Version 1.3.0 release since this now needs XCode 8 to build and run.
 
