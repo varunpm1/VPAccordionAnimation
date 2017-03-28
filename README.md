@@ -34,6 +34,47 @@ for populating the view or viewController data in viewDidLoad().
 
 # ![Screenshot](/VPAccordionAnimation-Screenshot1.png) ![Screenshot](/VPAccordionAnimation-Screenshot2.png)
 
+
+Here are some of the customizable properties that can be used to handle animations and UI display type.
+
+
+### AccordionAnimationController subclassed properties
+
+You can define the close and open duration speed using the below properties -
+
+`var closeAnimationDuration : TimeInterval {get set}`
+`var openAnimationDuration : TimeInterval {get set}`
+
+
+You can create the load state for cell on loading using below property - You can either set expanded all or collapsed all. Defaults to collapsed all
+
+`var cellDefaultState : DefaultState {get set}`
+
+
+If multiple cell expansion is needed, then set below variable to true
+
+`var multipleCellExpansionEnabled : Bool {get set}`
+
+
+When a cell is expanded, if scrolling of tableView has to be enabled, then use the below property.
+
+`var tableViewScrollEnabledWhenExpanded : Bool {get set}`
+
+
+You can specify the rotation direction for arrow view (if present, clockwise or anti-clockwise) using the below property
+
+`var arrowRotationDirection : ArrowRotation {get set}`
+
+
+### AccordionAnimationTableViewCell subclassed properties
+
+If there is an arrow view, you can specify start and end direction of arrow so as to handle the animation by Accordion Animation protocol
+
+`var arrowImageInitialDirection : ArrowDirection = .right`
+`var arrowImageFinalDirection : ArrowDirection = .down`
+
+
+
 ## Contributing
 **Type - 1**
 
