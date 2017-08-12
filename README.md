@@ -92,6 +92,9 @@ If there is an arrow view, you can specify start and end direction of arrow so a
 
 ## History
 
+### Version 2.1.1
+Fixed the offset issue which causes slight flicking when collapsing the cells
+
 ### Version 2.1.0
 Fixed layout issue when using UITablewViewAutomaticDimension for cells
 
