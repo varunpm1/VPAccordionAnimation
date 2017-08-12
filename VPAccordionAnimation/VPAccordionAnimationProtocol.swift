@@ -62,6 +62,9 @@ protocol VPAccordionAnimationProtocol : class {
     /// Bool variable that allow or disallow tableView scrolling when expanded. If allowMultipleCellExpansion is set to false, then this will be set to false. Defaults to false.
     var tableViewScrollEnabledWhenExpanded : Bool {get set}
     
+    /// Bool variable that allow or disallow tableView scrolling when collapsed. Defaults to true.
+    var tableViewScrollEnabledWhenCollapsed : Bool {get set}
+    
     /// Bool variable that determines whether expansion/collapsing should be done. If set, then expanding or collapsing is done. Else does nothing. Defaults to true
     var allowTableViewSelection : Bool {get set}
     
@@ -141,9 +144,9 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
             expandedIndexPaths.remove(at: expandedIndexPaths.index(of: indexPath)!)
             let removedView = getRemovedViewOrControllerForIndexPath(indexPath)
             
-            // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true when hiding all cells.
+            // Scrolling will be disabled if allowTableViewScrollingWhenExpanded is set to false. So set it to true/false when hiding all cells.
             if (!tableViewScrollEnabledWhenExpanded && expandedIndexPaths.count == 0) {
-                tableView.isScrollEnabled = true
+                tableView.isScrollEnabled = tableViewScrollEnabledWhenCollapsed
             }
             
             // Take the necessary screenshot to make the UI ready for aniamtion
@@ -174,7 +177,12 @@ extension VPAccordionAnimationProtocol where Self : VPAccordionAnimationViewCont
                 tableView.reloadData()
                 
                 // Restore proper content offset. +1 since cell's contentView and (infoView + detailsView) has a difference of 1 pixel
-                tableView.contentOffset.y = max(0, offset - removedView.bounds.size.height + 1)
+                if removedView.isKind(of: UIView.self) {
+                    tableView.contentOffset.y = max(0, offset - removedView.bounds.size.height + 1)
+                }
+                else {
+                    tableView.contentOffset.y = max(0, offset - removedView.view.bounds.size.height + 1)
+                }
                 
                 // Allow for loading of cells' data. Call in main queue to load all data before showing another animation if needed. Else arrow rotation issue is found
                 DispatchQueue.main.async(execute: {
@@ -316,12 +324,12 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
     /// Take the necessary screenshot to make the UI ready for aniamtion
     func createScreenshotUI(_ tableView : UITableView, indexPath : IndexPath, callBack : VPAccordionAnimationCompletionBlock?) -> VPAccordionAnimationCompletionBlock {
         // Get the frame of the expandedIndexPath and the current contentOffset
-        let rect = tableView.rectForRow(at: indexPath)
+        let oldRect = tableView.rectForRow(at: indexPath)
         let offset = tableView.contentOffset.y
         
         // A full table height + current cell height is added for safety purpose. An extra height is added for scrolling purpose. i.e., if bottom image is scrolled upwards, then empty image will be seen and vice-versa. To avoid this, rendering remaining bottom/top view so that image will not be empty
-        let topImageRect = CGRect(x: tableView.frame.origin.x, y: rect.minY - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height + rect.size.height)
-        let bottomImageRect = CGRect(x: tableView.frame.origin.x, y: rect.maxY, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
+        let topImageRect = CGRect(x: tableView.bounds.origin.x, y: oldRect.minY - tableView.bounds.size.height, width: tableView.bounds.size.width, height: tableView.bounds.size.height + oldRect.size.height)
+        let bottomImageRect = CGRect(x: tableView.bounds.origin.x, y: oldRect.maxY, width: tableView.bounds.size.width, height: tableView.bounds.size.height)
         
         // Get the instance of arrowView if animation needed for rotating the arrow
         var arrowView : UIView?
@@ -339,7 +347,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
                 // Get the screenshot of the arrowImage
                 let arrowImage = getScreenShot(cell.arrowView, forRect: cell.arrowView.bounds)
                 arrowView = UIImageView(image: arrowImage)
-                arrowView?.frame = CGRect(x: cell.arrowView.frame.origin.x, y: rect.origin.y - topImageRect.minY + cell.arrowView.frame.origin.y, width: cell.arrowView.frame.size.width, height: cell.arrowView.frame.size.height)
+                arrowView?.frame = CGRect(x: cell.arrowView.frame.origin.x, y: oldRect.origin.y - topImageRect.minY + cell.arrowView.frame.origin.y, width: cell.arrowView.frame.size.width, height: cell.arrowView.frame.size.height)
                 
                 // Hide the arrow View before taking a screenshot. Unhide after animation
                 cell.arrowView.isHidden = true
@@ -385,6 +393,7 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
         }
         
         view.addSubview(containerView)
+        view.bringSubview(toFront: containerView)
         
         // If there is a section footer view, then unhide it after taking a screenshot
         if let footerView = tableView.footerView(forSection: indexPath.section) {
@@ -403,16 +412,20 @@ private extension VPAccordionAnimationProtocol where Self : VPAccordionAnimation
                 }
             }
             
+            // Scroll the tableView to middle if needed
+            if isExpanding {
+                tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+            }
+            else {
+                tableView.scrollToRow(at: indexPath, at: .none, animated: false)
+                
+                // Reload data forcefully since offset wasn't being returned properly when collapsing
+                tableView.reloadRows(at: [indexPath], with: .none)
+                tableView.reloadData()
+            }
+            
             // Animate the expansion/collapsing of table cells
             UIView.animate(withDuration: isExpanding ? self!.openAnimationDuration : self!.closeAnimationDuration, animations: {
-                // Scroll the tableView to middle if needed
-                if isExpanding {
-                    tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
-                }
-                else {
-                    tableView.scrollToRow(at: indexPath, at: .none, animated: false)
-                }
-                
                 // Get the new frame for the selected indexPath
                 let rect = tableView.rectForRow(at: indexPath)
                 

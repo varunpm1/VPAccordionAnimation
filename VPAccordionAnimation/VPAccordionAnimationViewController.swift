@@ -55,6 +55,9 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
     // Default value for disabling scrolling when expanded
     var tableViewScrollEnabledWhenExpanded: Bool = false
     
+    // Default value for disabling scrolling when collapsed
+    var tableViewScrollEnabledWhenCollapsed: Bool = true
+    
     // Default value for enabling selection for expanding or collapsing
     var allowTableViewSelection: Bool = true
     
@@ -92,7 +95,7 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
         self.tableView = tableView
         
         // For default cells
-        self.tableView.register(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
+        self.tableView.register(UINib(nibName: String(describing: VPAccordionTableViewCell.self), bundle: nil), forCellReuseIdentifier: String(describing: VPAccordionTableViewCell.self))
         
         for (index, view) in viewData.enumerated() {
             indexPathsData[IndexPath(row: index, section: 0)] = view
@@ -106,7 +109,7 @@ class VPAccordionAnimationViewController: UIViewController, VPAccordionAnimation
         self.tableView = tableView
         
         // For default cells
-        self.tableView.register(UINib(nibName: "VPAccordionTableViewCell", bundle: nil), forCellReuseIdentifier: "VPAccordionTableViewCell")
+        self.tableView.register(UINib(nibName: String(describing: VPAccordionTableViewCell.self), bundle: nil), forCellReuseIdentifier: String(describing: VPAccordionTableViewCell.self))
         
         for (index, indexPath) in indexPaths.enumerated() {
             indexPathsData[indexPath] = viewData[index]
@@ -147,7 +150,7 @@ extension VPAccordionAnimationViewController : UITableViewDataSource, UITableVie
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "VPAccordionTableViewCell") as! VPAccordionTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: VPAccordionTableViewCell.self)) as! VPAccordionTableViewCell
         cell.displayLabel?.text = "Row \((indexPath as NSIndexPath).row + 1)"
         
         return cell
@@ -156,7 +159,7 @@ extension VPAccordionAnimationViewController : UITableViewDataSource, UITableVie
     //MARK: UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if isIndexPathExpanded(indexPath) {
-            return tableView.bounds.size.height
+            return UIScreen.main.bounds.size.height
         }
         else {
             return 120
