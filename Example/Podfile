@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'VPAccordionAnimation_Example' do
+  pod 'VPAccordionAnimation', :path => '../'
+
+  target 'VPAccordionAnimation_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

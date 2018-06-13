@@ -4,17 +4,32 @@ This is a custom class that provides Accordion Animation for cells expanding and
 
 ## IMP
 
-Now VPAccordionAnimation supports Swift 3.0. It now needs XCode 8 or later to build.
+Now VPAccordionAnimation supports Swift 4.0. It now needs XCode 9 or later to build.
 
 ## Requirements
 
-1. iOS 7.0 or later.
+1. iOS 9.0 or later.
 2. ARC memory management.
 
 ## Usage
 
+### Source Code
+
 1. Add the VPAccordionAnimation folder inside your project folder (Contains 4 files. Cell nib file only if customization is not needed. If you have a cell, which is a subclass of VPAccordionAnimationCell, then this file is not needed.)
-2. Change the parent class of the view controller containing tableView to VPAccordionAnimationViewController. If there is a BaseVC, then change the parent of VPAccordionAnimationViewController to BaseVC
+
+
+### Using cocoapods
+
+1. Add the pod using `pod 'VPAccordionAnimation'` in Podfile and use `pod install` or `pod update`.
+2. Add `import VPAccordionAnimation` wherever VPAccordionAnimation or it's properties will be used.
+
+
+### Setup procedure
+
+Here are some of the customizable properties that can be used to handle animations and UI display type.
+
+1. Change the parent class of the view controller containing tableView to VPAccordionAnimationViewController. If there is a BaseVC, then change the parent of VPAccordionAnimationViewController to BaseVC
+2. Set the `isAccordionAnimationEnabled` property to `true`.
 3. Call function - 
 
 `createAccordionDataForIndexPaths(withViewOrControllerData viewData: [AnyObject], forTableView tableView : UITableView)`
@@ -35,10 +50,9 @@ for populating the view or viewController data in viewDidLoad().
 # ![Screenshot](/VPAccordionAnimation-Screenshot1.png) ![Screenshot](/VPAccordionAnimation-Screenshot2.png)
 
 
-Here are some of the customizable properties that can be used to handle animations and UI display type.
+### VPAccordionAnimationOptions properties
 
-
-### AccordionAnimationController subclassed properties
+All these options are available inside `accordionDataSource` property of `VPAccordionAnimationController` which is a instance of `VPAccordionAnimationOptions` structure.
 
 You can define the close and open duration speed using the below properties -
 
@@ -91,6 +105,9 @@ If there is an arrow view, you can specify start and end direction of arrow so a
 3. You can download the update code :P
 
 ## History
+
+### Version 3.0.0
+Now the VPAccordionAnimation supports pods as well. Also it has been migrated to Swift 4 as well.
 
 ### Version 2.1.1
 Fixed the offset issue which causes slight flicking when collapsing the cells

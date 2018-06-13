@@ -1,0 +1,6 @@
+framework module VPAccordionAnimation {
+  umbrella header "VPAccordionAnimation-umbrella.h"
+
+  export *
+  module * { export * }
+}

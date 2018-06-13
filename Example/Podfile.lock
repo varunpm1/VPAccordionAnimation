@@ -1,0 +1,16 @@
+PODS:
+  - VPAccordionAnimation (3.0.0)
+
+DEPENDENCIES:
+  - VPAccordionAnimation (from `../`)
+
+EXTERNAL SOURCES:
+  VPAccordionAnimation:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  VPAccordionAnimation: eb84c82016ce214289eca36d32e2c77a632159be
+
+PODFILE CHECKSUM: b124b0701c087635bd91afec9ef5c7d83d4f995a
+
+COCOAPODS: 1.5.0
