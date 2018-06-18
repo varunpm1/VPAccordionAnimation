@@ -26,8 +26,6 @@ Now VPAccordionAnimation supports Swift 4.0. It now needs XCode 9 or later to bu
 
 ### Setup procedure
 
-Here are some of the customizable properties that can be used to handle animations and UI display type.
-
 1. Change the parent class of the view controller containing tableView to VPAccordionAnimationViewController. If there is a BaseVC, then change the parent of VPAccordionAnimationViewController to BaseVC
 2. Set the `isAccordionAnimationEnabled` property to `true`.
 3. Call function - 
