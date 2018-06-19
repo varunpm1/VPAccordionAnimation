@@ -66,7 +66,7 @@ open class VPAccordionAnimationViewController: UIViewController {
         self.tableView = tableView
         
         // For default cells
-        self.tableView.register(UINib(nibName: String(describing: VPAccordionTableViewCell.self), bundle: nil), forCellReuseIdentifier: String(describing: VPAccordionTableViewCell.self))
+        self.tableView.register(UINib(nibName: String(describing: VPAccordionTableViewCell.self), bundle: Bundle(for: VPAccordionTableViewCell.self)), forCellReuseIdentifier: String(describing: VPAccordionTableViewCell.self))
         
         for (index, view) in viewData.enumerated() {
             indexPathsData[IndexPath(row: index, section: 0)] = view
@@ -86,7 +86,7 @@ open class VPAccordionAnimationViewController: UIViewController {
         self.tableView = tableView
         
         // For default cells
-        self.tableView.register(UINib(nibName: String(describing: VPAccordionTableViewCell.self), bundle: nil), forCellReuseIdentifier: String(describing: VPAccordionTableViewCell.self))
+        self.tableView.register(UINib(nibName: String(describing: VPAccordionTableViewCell.self), bundle: Bundle(for: VPAccordionTableViewCell.self)), forCellReuseIdentifier: String(describing: VPAccordionTableViewCell.self))
         
         for (index, indexPath) in indexPaths.enumerated() {
             indexPathsData[indexPath] = viewData[index]

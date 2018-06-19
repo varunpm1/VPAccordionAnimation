@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'VPAccordionAnimation'
-  s.version          = '3.0.0'
+  s.version          = '3.0.1'
   s.summary          = 'Accordion Animation for UITableView cell expansion and collapsing.'
 
 # This description is used to generate tags and improve search results.

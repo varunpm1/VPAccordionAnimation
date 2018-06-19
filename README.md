@@ -104,6 +104,9 @@ If there is an arrow view, you can specify start and end direction of arrow so a
 
 ## History
 
+### Version 3.0.1
+Fixed the Bundle issue due to pods
+
 ### Version 3.0.0
 Now the VPAccordionAnimation supports pods as well. Also it has been migrated to Swift 4 as well.
 
